@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
-
 
 class User(AbstractUser):
     phone_number = models.CharField(max_length=10)
@@ -14,7 +12,7 @@ class User(AbstractUser):
         pass
 
 
-class client(User):
+class Client(User):
     def all_client_requests(request):
         pass
 
@@ -25,7 +23,7 @@ class client(User):
         pass
 
 
-class deliver(User):
+class Deliver(User):
     def all_requests(request):
         pass
 
