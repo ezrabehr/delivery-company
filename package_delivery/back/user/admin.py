@@ -1,7 +1,17 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import User
+from .models import Client, Deliver
 
-admin.site.register(User, UserAdmin)
+
+class CustomAdminModel(admin.ModelAdmin):
+    list_display = (
+        "username",
+        "first_name",
+        "last_name",
+        "email",
+        "phone_number",
+    )
+
+
+admin.site.register([Client, Deliver], CustomAdminModel)
 
 # Register your models here.

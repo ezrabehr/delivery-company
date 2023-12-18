@@ -6,24 +6,23 @@ from django.core.serializers import serialize
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import RequestSerializer, ClientSerializer, RequestUpdateSerializer
+from .serializers import RequestUpdateSerializer, UserSerializer
 
 
-@api_view(["GET"])
-def home_view(request):
-    if request.method == "GET":
-        # return HttpResponse('hi!!')
-        return render(request, "index.html")
+# @api_view(["GET"])
+# def home_view(request):
+#     if request.method == "GET":
+#         # return HttpResponse('hi!!')
+#         return render(request, "index.html")
 
-    else:
-        return Response(
-            {"error": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
-        )
+#     else:
+#         return Response(
+#             {"error": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+#         )
 
-
+@api_view(["POST"])
 def user_signup(request):
-    # form = UserCreationForm()
-    # return render(request, "signup.html", {'form':form})
+
     pass
 
 
@@ -54,7 +53,7 @@ def client_requests(request, client_id):
 
     if request.method == "GET":
         client_requests = Request.objects.filter(creator=client)
-        serializer = RequestSerializer(client_requests, many=True)
+        serializer = UserSerializer(client_requests, many=True)
 
         data = {
             "client_requests": serializer.data,
@@ -79,8 +78,8 @@ def client_requests_id(request, client_id, request_id):
 
     if request.method == "GET":
         # Serialize the specific_request and client instances
-        request_serializer = RequestSerializer(specific_request)
-        client_serializer = ClientSerializer(client)
+        request_serializer = UserSerializer(specific_request)
+        client_serializer = UserSerializer(client)
 
         data = {
             "specific_request": request_serializer.data,
@@ -110,7 +109,7 @@ def delivery_requests(request, delivery_id):
         # deliver = get_object_or_404(Deliver, id=delivery_id)
 
         all_requests = Request.objects.all()
-        serializer = RequestSerializer(all_requests, many=True)
+        serializer = UserSerializer(all_requests, many=True)
 
         return Response({"requests": serializer.data})
 
@@ -128,7 +127,7 @@ def delivery_list(request, delivery_id):
     if request.method == "GET":
         # Use the related_name to get all requests associated with the delivery person
         delivery_requests = Request.objects.filter(delivery=delivery_person)
-        serializer = RequestSerializer(delivery_requests, many=True)
+        serializer = UserSerializer(delivery_requests, many=True)
 
         return Response({"delivery_requests": serializer.data})
 
@@ -154,7 +153,7 @@ def delivery_list_request_id(request, delivery_id, request_id):
 
     if request.method == "GET":
         # Serialize and return the specific request associated with the delivery person
-        serializer = RequestSerializer(specific_request)
+        serializer = UserSerializer(specific_request)
         return Response({"specific_request": serializer.data})
 
     elif request.method == "PUT":

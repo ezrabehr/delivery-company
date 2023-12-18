@@ -1,25 +1,22 @@
 from rest_framework import serializers
-from .models import Deliver, Client
+from .models import User
 from request.models import Request
 
-class RequestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Request
-        fields = '__all__'
 
-class ClientSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Client
-        fields = '__all__'
+        model = User
+        fields = ["username", "first_name", "last_name", "email", "phone_number"]
+
 
 class RequestUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Request
-        fields = ['status']
+        fields = ["status"]
 
     def validate(self, data):
         # Check that the only allowed field is 'status'
-        allowed_fields = ['status']
+        allowed_fields = ["status"]
         for field in data.keys():
             if field not in allowed_fields:
                 raise serializers.ValidationError(
