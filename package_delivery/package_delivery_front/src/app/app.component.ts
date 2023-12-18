@@ -6,13 +6,15 @@ import { AuthComponent } from "./auth/auth.component";
 import { HomePageComponent } from "./home-page/home-page.component";
 import { ClientRequestsComponent } from "./client-requests/client-requests.component";
 import { RequestListComponent } from "./request-list/request-list.component";
+import { DeliverListComponent } from "./deliver-list/deliver-list.component";
+import { AddRequestComponent } from "./add-request/add-request.component";
 
 @Component({
     selector: 'app-root',
     standalone: true,
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
-    imports: [CommonModule, RouterOutlet, HeaderComponent, AuthComponent, HomePageComponent, ClientRequestsComponent, RequestListComponent]
+    imports: [CommonModule, RouterOutlet, HeaderComponent, AuthComponent, HomePageComponent, ClientRequestsComponent, RequestListComponent, DeliverListComponent, AddRequestComponent]
 })
 export class AppComponent {
   title = 'package_delivery_front';

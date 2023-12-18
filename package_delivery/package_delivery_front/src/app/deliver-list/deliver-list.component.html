@@ -4,10 +4,9 @@
       <div class="col-md-12">
         <div class="card bg-white mb-5">
           <div class="card-header clearfix border-bottom mb-4">
-            <h4 class="card-title">Delivery Requests</h4>
+            <h4 class="card-title">Deliver List</h4>
           </div>
           <div class="card-body">
-
             <ul class="list-unstyled">
               <li class="position-relative booking">
                 <div class="media">
@@ -15,11 +14,45 @@
                   <div class="media-body">
                     <h5 class="mb-4">
                       "title"
-                      <span class="badge bg-danger mx-3">Pending</span
-                      ><span class="badge bg-primary mx-3">In Progress</span>
-                      <span class="badge bg-success">Complete</span>
+                      <div class="btn-group" role="group" aria-label="Status">
+                        <input
+                          type="radio"
+                          class="btn-check"
+                          name="status"
+                          id="pending"
+                          autocomplete="off"
+                          checked
+                        />
+                        <label class="btn btn-outline-danger mx-3" for="pending"
+                          >Pending</label
+                        >
+
+                        <input
+                          type="radio"
+                          class="btn-check"
+                          name="status"
+                          id="in-progress"
+                          autocomplete="off"
+                        />
+                        <label
+                          class="btn btn-outline-primary mx-3"
+                          for="in-progress"
+                          >In Progress</label
+                        >
+
+                        <input
+                          type="radio"
+                          class="btn-check"
+                          name="status"
+                          id="complete"
+                          autocomplete="off"
+                        />
+                        <label class="btn btn-outline-success" for="complete"
+                          >Complete</label
+                        >
+                      </div>
                     </h5>
-                    
+
                     <div class="mb-3">
                       <span class="mr-2 d-block d-sm-inline-block mb-2 mb-sm-0"
                         >From:</span
@@ -66,17 +99,9 @@
                 </div>
               </li>
             </ul>
-
           </div>
-
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="fixed-button">
-    <a href="#" class="btn btn-primary btn-lg rounded-circle">
-      +
-    </a>
   </div>
 </body>
