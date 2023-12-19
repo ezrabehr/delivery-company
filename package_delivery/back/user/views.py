@@ -4,8 +4,9 @@ from django.contrib.auth import authenticate, login, logout
 from .models import Client, Deliver
 from request.models import Request
 from django.core.serializers import serialize
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from .serializers import RequestUpdateSerializer, UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -79,10 +80,11 @@ def user_login(request):
             {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
         )
 
-
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def user_logout(request):
     logout(request)
-    return redirect("login")
+    return Response({"message": "Successfully logged out."})
 
 
 @api_view(["GET", "DELETE"])

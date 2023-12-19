@@ -8,13 +8,14 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
+import { HeaderComponent } from "../header/header.component";
 
 @Component({
-  selector: 'app-sign-up',
-  standalone: true,
-  imports: [CommonModule, RouterOutlet, ReactiveFormsModule],
-  templateUrl: './sign-up.component.html',
-  styleUrl: './sign-up.component.scss',
+    selector: 'app-sign-up',
+    standalone: true,
+    templateUrl: './sign-up.component.html',
+    styleUrl: './sign-up.component.scss',
+    imports: [CommonModule, RouterOutlet, ReactiveFormsModule, HeaderComponent]
 })
 export class SignUpComponent {
   constructor(private router: Router, private http: HttpClient) {}
@@ -38,6 +39,11 @@ export class SignUpComponent {
     this.http.post(loginURL, credentials).subscribe(
       (response) => {
         console.log('authentication succcessful', response);
+        
+        const usernameValue = this.signUpForm.get('username')!.value;
+
+        sessionStorage.setItem('username', usernameValue!);
+
         this.router.navigate(['/home']);
       },
       (error) => {

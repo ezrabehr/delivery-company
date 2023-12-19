@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -8,13 +8,14 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
+import { HeaderComponent } from "../header/header.component";
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, RouterOutlet, ReactiveFormsModule],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+    selector: 'app-login',
+    standalone: true,
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.scss',
+    imports: [CommonModule, RouterOutlet, ReactiveFormsModule, HeaderComponent]
 })
 export class LoginComponent {
   constructor(private router: Router, private http: HttpClient) {}
@@ -29,9 +30,15 @@ export class LoginComponent {
     console.log(credentials);
 
     const loginURL = 'http://127.0.0.1:8000/login';
+    
     this.http.post(loginURL, credentials).subscribe(
       (response) => {
         console.log('authentication succcessful', response);
+
+        const usernameValue = this.profileForm.get('username')!.value;
+        
+        sessionStorage.setItem('username', usernameValue!);
+        
         this.router.navigate(['/home']);
       },
       (error) => {

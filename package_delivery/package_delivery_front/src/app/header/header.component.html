@@ -25,7 +25,6 @@
         </li>
       </ul>
     </div>
-
     <!-- Center: Logo -->
     <div class="d-flex justify-content-center">
       <a class="navbar-brand" href="#">
@@ -37,10 +36,22 @@
         />
       </a>
     </div>
+    <div *ngIf="username !== null" class="d-flex align-items-center">
+      <h4>Welcome, {{ username }}!</h4>
+    </div>
 
     <!-- Right side: Login/Sign up -->
-    <div class="d-flex align-items-center">
+    <div
+      *ngIf="username === null; else login"
+      class="d-flex align-items-center"
+    >
       <a class="dropdown-item" href="/login">Login / Sign up</a>
     </div>
+
+    <ng-template #login>
+      <div class="d-flex align-items-center">
+        <a class="dropdown-item" href="/home" (click)="logout()">Logout</a>
+      </div>
+    </ng-template>
   </div>
 </nav>
