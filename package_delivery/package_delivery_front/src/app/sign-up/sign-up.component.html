@@ -1,48 +1,120 @@
 <div class="form-bg">
-    <div class="container">
-        <div class="row justify-content-md-center">
-            <div class="col-md-6">
-                <div class="form-container">
-                    <h3 class="title">Register</h3>
-                    <form class="form-horizontal">
-                        <div class="mb-3">
-                            <label for="userName" class="form-label">User Name</label>
-                            <input type="text" class="form-control" id="userName" placeholder="User Name">
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email ID</label>
-                            <input type="email" class="form-control" id="email" placeholder="Email Address">
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="Password">
-                        </div>
-                        <div class="mb-3">
-                            <label for="confirmPassword" class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password">
-                        </div>
-                        <h4 class="sub-title">Personal Information</h4>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Phone No.</label>
-                            <input type="text" class="form-control" id="phone" placeholder="Phone Number">
-                        </div>
-                        <div class="mb-3">
-                            <label for="user" class="form-label">User</label>
-                            <select class="form-select" id="user">
-                                <option value="none">---</option>
-                                <option value="client">Client</option>
-                                <option value="deliver">Deliver</option>
-                            </select>
-                        </div>
-                        <div class="form-check mb-3">
-                            <input type="checkbox" class="form-check-input" id="terms">
-                            <label class="form-check-label" for="terms">I agree to the terms</label>
-                        </div>
-                        <span class="signin-link">Already have an account? Click here to <a href="/login">Login</a></span>
-                        <button class="btn btn-primary signup">Create Account</button>
-                    </form>
-                </div>
+  <div class="container">
+    <div class="row justify-content-md-center">
+      <div class="col-md-6">
+        <div class="form-container">
+          <br />
+          <h3 class="title">Sign up</h3>
+          <br />
+          <form
+            class="form-horizontal"
+            [formGroup]="signUpForm"
+            (ngSubmit)="onSubmit()"
+          >
+            <div class="mb-3">
+              <label for="userName" class="form-label">User Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="userName"
+                placeholder="User Name"
+                formControlName="username"
+                required
+              />
             </div>
+            <div class="mb-3">
+              <label for="firstName" class="form-label">First Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="firstName"
+                placeholder="UseFirst Name"
+                formControlName="firstName"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="lastName" class="form-label">last Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="lastName"
+                placeholder="Last Name"
+                formControlName="lastName"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                placeholder="Email Address"
+                formControlName="email"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                placeholder="Password"
+                formControlName="password"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label"
+                >Confirm Password</label
+              >
+              <input
+                type="password"
+                class="form-control"
+                id="confirmPassword"
+                placeholder="Confirm Password"
+                formControlName="confirmPassword"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="phone" class="form-label">Phone No.</label>
+              <input
+                type="text"
+                class="form-control"
+                id="phone"
+                placeholder="Phone Number"
+                formControlName="phoneNumber"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="user" class="form-label">User</label>
+              <select
+                class="form-select"
+                id="user"
+                formControlName="user"
+                required
+              >
+                <option value="">Select User Type</option>
+                <option value="client">Client</option>
+                <option value="deliver">Deliver</option>
+              </select>
+            </div>
+            <span class="signin-link"
+              >Already have an account? Click here to
+              <a href="/login">Login</a></span
+            >
+            <div class="mb-3"></div>
+            <!-- Add some spacing here -->
+            <button type="submit" class="btn btn-primary signup">
+              Create Account
+            </button>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
 </div>

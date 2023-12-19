@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from .models import Client, Deliver
@@ -12,7 +13,45 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 @api_view(["POST"])
 def user_signup(request):
-    pass
+    username = request.data.get("username")
+    first_name = request.data.get("firstName")
+    last_name = request.data.get("lastName")
+    email = request.data.get("email")
+    password = request.data.get("password")
+    confirmPassword = request.data.get("confirmPassword")
+    phone_number = request.data.get("phoneNumber")
+    user = request.data.get("user")
+
+    type_of_user = None
+
+    # Check if passwords match
+    if password != confirmPassword:
+        return Response(
+            {"error": "Passwords do not match"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Checking what type of user
+    if user == "client":
+        type_of_user = Client
+    else:
+        type_of_user = Deliver
+
+    try:
+        type_of_user.objects.create_user(
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password=password,
+            phone_number=phone_number,
+        )
+
+        return Response(
+            {"message": f"{type_of_user} created successfully"},
+            status=status.HTTP_201_CREATED,
+        )
+    except ValidationError as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["POST"])
@@ -20,7 +59,6 @@ def user_login(request):
     username = request.data.get("username")
     password = request.data.get("password")
 
-    
     user = authenticate(request, username=username, password=password)
 
     if user is not None:
