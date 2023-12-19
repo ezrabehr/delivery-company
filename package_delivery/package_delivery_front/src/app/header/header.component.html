@@ -1,0 +1,57 @@
+<nav class="navbar bg-body-tertiary navbar-expand-lg">
+  <div class="container-fluid">
+    <!-- Left side: Home and Options -->
+    <div class="d-flex align-items-center">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Options
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Add request</a></li>
+            <li><a class="dropdown-item" href="#">My requests</a></li>
+            <li><a class="dropdown-item" href="#">Request list</a></li>
+            <li><a class="dropdown-item" href="#">My deliveries</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <!-- Center: Logo -->
+    <div class="d-flex justify-content-center">
+      <a class="navbar-brand" href="#">
+        <img
+          src="../../assets/final.png"
+          alt="Bootstrap"
+          width="250"
+          height="55"
+        />
+      </a>
+    </div>
+    <div *ngIf="username !== null" class="d-flex align-items-center">
+      <h4>Welcome, {{ username }}!</h4>
+    </div>
+
+    <!-- Right side: Login/Sign up -->
+    <div
+      *ngIf="username === null; else login"
+      class="d-flex align-items-center"
+    >
+      <a class="dropdown-item" href="/login">Login / Sign up</a>
+    </div>
+
+    <ng-template #login>
+      <div class="d-flex align-items-center">
+        <a class="dropdown-item" href="/home" (click)="logout()">Logout</a>
+      </div>
+    </ng-template>
+  </div>
+</nav>
