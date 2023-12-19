@@ -1,7 +1,7 @@
 from django.forms import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from .models import Client, Deliver
+from .models import Client, Deliver, User
 from request.models import Request
 from django.core.serializers import serialize
 from rest_framework.decorators import api_view, permission_classes
@@ -38,7 +38,7 @@ def user_signup(request):
         type_of_user = Deliver
 
     try:
-        type_of_user.objects.create_user(
+        user_info = type_of_user.objects.create_user(
             username=username,
             first_name=first_name,
             last_name=last_name,
@@ -47,8 +47,13 @@ def user_signup(request):
             phone_number=phone_number,
         )
 
+        user_info_db = User.objects.get(username=username)
+        ser_user = UserSerializer(user_info_db).data
         return Response(
-            {"message": f"{type_of_user} created successfully"},
+            {
+                "message": f"{type_of_user} created successfully",
+                "user": ser_user,
+            },
             status=status.HTTP_201_CREATED,
         )
     except ValidationError as e:
@@ -62,15 +67,12 @@ def user_login(request):
 
     user = authenticate(request, username=username, password=password)
 
-    if user is not None:
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-        refresh_token = str(refresh)
-
+    if user:
+        user_info = User.objects.get(username=username)
+        ser_user = UserSerializer(user_info).data
         return Response(
             {
-                "access_token": access_token,
-                "refresh_token": refresh_token,
+                "user": ser_user,
             },
             status=status.HTTP_200_OK,
         )
@@ -80,11 +82,12 @@ def user_login(request):
             {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
         )
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def user_logout(request):
-    logout(request)
-    return Response({"message": "Successfully logged out."})
+
+# @api_view(["POST"])
+# @permission_classes([IsAuthenticated])
+# def user_logout(request):
+#     logout(request)
+#     return Response({"message": "Successfully logged out."})
 
 
 @api_view(["GET", "DELETE"])

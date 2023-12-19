@@ -37,12 +37,17 @@ export class SignUpComponent {
 
     const loginURL = 'http://127.0.0.1:8000/signup';
     this.http.post(loginURL, credentials).subscribe(
-      (response) => {
+      (response: any) => {
         console.log('authentication succcessful', response);
         
-        const usernameValue = this.signUpForm.get('username')!.value;
 
-        sessionStorage.setItem('username', usernameValue!);
+        sessionStorage.setItem('username', response.user.username);
+        sessionStorage.setItem('first_name', response.user.first_name);
+        sessionStorage.setItem('last_name', response.user.last_name);
+        sessionStorage.setItem('password', response.user.password);
+        sessionStorage.setItem('phone_number', response.user.phone_number);
+        sessionStorage.setItem('email', response.user.email);
+
 
         this.router.navigate(['/home']);
       },

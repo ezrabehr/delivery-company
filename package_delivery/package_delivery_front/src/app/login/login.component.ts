@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -8,14 +8,15 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
-import { HeaderComponent } from "../header/header.component";
+import { HeaderComponent } from '../header/header.component';
+import { User } from '../interface';
 
 @Component({
-    selector: 'app-login',
-    standalone: true,
-    templateUrl: './login.component.html',
-    styleUrl: './login.component.scss',
-    imports: [CommonModule, RouterOutlet, ReactiveFormsModule, HeaderComponent]
+  selector: 'app-login',
+  standalone: true,
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
+  imports: [CommonModule, RouterOutlet, ReactiveFormsModule, HeaderComponent],
 })
 export class LoginComponent {
   constructor(private router: Router, private http: HttpClient) {}
@@ -30,15 +31,18 @@ export class LoginComponent {
     console.log(credentials);
 
     const loginURL = 'http://127.0.0.1:8000/login';
-    
+
     this.http.post(loginURL, credentials).subscribe(
-      (response) => {
+      (response: any) => {
         console.log('authentication succcessful', response);
 
-        const usernameValue = this.profileForm.get('username')!.value;
-        
-        sessionStorage.setItem('username', usernameValue!);
-        
+        sessionStorage.setItem('username', response.user.username);
+        sessionStorage.setItem('first_name', response.user.first_name);
+        sessionStorage.setItem('last_name', response.user.last_name);
+        sessionStorage.setItem('password', response.user.password);
+        sessionStorage.setItem('phone_number', response.user.phone_number);
+        sessionStorage.setItem('email', response.user.email);
+
         this.router.navigate(['/home']);
       },
       (error) => {
