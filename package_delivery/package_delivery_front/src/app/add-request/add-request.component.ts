@@ -31,8 +31,8 @@ export class AddRequestComponent {
 
     console.log(request);
 
-    const username: string = sessionStorage.getItem('username')!;
-    const addRequestURL = `http://127.0.0.1:8000/client/${username}/requests/`;
+    const id: string = sessionStorage.getItem('id')!;
+    const addRequestURL = `http://127.0.0.1:8000/client/${id}/requests/`;
 
     this.http.post(addRequestURL, request).subscribe(
       (response: any) => {
