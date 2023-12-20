@@ -4,9 +4,10 @@
     <div class="d-flex align-items-center">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
+          <a class="nav-link active" aria-current="page" href="/home">Home</a>
         </li>
-        <li class="nav-item dropdown">
+
+        <li class="nav-item dropdown" *ngIf="username !== null">
           <a
             class="nav-link dropdown-toggle"
             href="#"
@@ -17,10 +18,18 @@
             Options
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Add request</a></li>
-            <li><a class="dropdown-item" href="#">My requests</a></li>
-            <li><a class="dropdown-item" href="#">Request list</a></li>
-            <li><a class="dropdown-item" href="#">My deliveries</a></li>
+            <li>
+              <a class="dropdown-item" *ngIf="userType === 'client'" href="/add-request">Add request</a>
+            </li>
+            <li>
+              <a class="dropdown-item" *ngIf="userType === 'client'" href="/my-requests">My requests</a>
+            </li>
+            <li>
+              <a class="dropdown-item" *ngIf="userType === 'deliver'" href="/all-request">All requests</a>
+            </li>
+            <li>
+              <a class="dropdown-item" *ngIf="userType === 'deliver'" href="/my-deliveries">My deliveries</a>
+            </li>
           </ul>
         </li>
       </ul>

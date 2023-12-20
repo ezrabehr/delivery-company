@@ -26,19 +26,5 @@ import { AddRequestComponent } from './add-request/add-request.component';
 })
 export class AppComponent {
   title = 'package_delivery_front';
-  loggedIn = false;
-  // userInfo = null;
-
-  
-  dataSave(){
-    sessionStorage.setItem('name','value');
-  }
-
-  get(){
-    return sessionStorage.getItem('name');
-  }
-
-  deleteAll(){
-    sessionStorage.clear();
-  }
 }
+// reroute header based on user

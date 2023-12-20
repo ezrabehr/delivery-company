@@ -9,11 +9,10 @@ import { CommonModule } from '@angular/common';
   styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
-  // constructor(){
-  //   this.logout()
-  // }
+
   logout() {
     sessionStorage.clear();
   }
   username: string | null = sessionStorage.getItem('username');
+  userType: string = sessionStorage.getItem('userType')!;
 }

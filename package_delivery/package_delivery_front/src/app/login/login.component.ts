@@ -42,6 +42,7 @@ export class LoginComponent {
         sessionStorage.setItem('password', response.user.password);
         sessionStorage.setItem('phone_number', response.user.phone_number);
         sessionStorage.setItem('email', response.user.email);
+        sessionStorage.setItem('userType', response.user.role);
 
         this.router.navigate(['/home']);
       },
