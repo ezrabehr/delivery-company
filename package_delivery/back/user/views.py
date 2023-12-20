@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from .serializers import RequestUpdateSerializer, UserSerializer
+from .serializers import RequestSerializer, RequestUpdateSerializer, UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.decorators import login_required
 
@@ -124,11 +124,16 @@ def client_requests(request, client_id):
 
     if request.method == "GET":
         client_requests = Request.objects.filter(creator=client)
-        serializer = UserSerializer(client_requests, many=True)
+        serializer = RequestSerializer(client_requests, many=True).data
 
         data = {
-            "client_requests": serializer.data,
-            "client": {"id": client.id, "username": client.username},
+            "client_requests": serializer,
+            "client": {
+                "id": client.id,
+                "username": client.username,
+                "email": client.email,
+                "phone_number": client.phone_number,
+            },
         }
         return Response(data)
 

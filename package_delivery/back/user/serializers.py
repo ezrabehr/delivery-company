@@ -17,6 +17,11 @@ class UserSerializer(serializers.ModelSerializer):
             "id",
         ]
 
+class RequestSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Request
+        fields = '__all__'
 
 class RequestUpdateSerializer(serializers.ModelSerializer):
     class Meta:
