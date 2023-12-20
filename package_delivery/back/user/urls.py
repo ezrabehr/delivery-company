@@ -4,7 +4,7 @@ from .views import *
 urlpatterns = [
     path('signup', user_signup, name='signup'),
     path('login', user_login, name='login'),
-    path('logout', user_logout, name='logout'),
+    # path('logout', user_logout, name='logout'),
     path("client/<int:client_id>/requests",client_requests, name='client_requests'),
     path("client/<int:client_id>/requests/<int:request_id>",client_requests_id, name='client_requests_id'),
     path("delivery/<int:delivery_id>/requests",delivery_requests, name='delivery_requests'),

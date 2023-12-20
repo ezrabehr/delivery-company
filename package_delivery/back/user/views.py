@@ -1,7 +1,7 @@
 from django.forms import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from .models import Client, Deliver
+from .models import Client, Deliver, User
 from request.models import Request
 from django.core.serializers import serialize
 from rest_framework.decorators import api_view, permission_classes
@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from .serializers import RequestUpdateSerializer, UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-
+from django.contrib.auth.decorators import login_required
 
 @api_view(["POST"])
 def user_signup(request):
@@ -45,10 +45,17 @@ def user_signup(request):
             email=email,
             password=password,
             phone_number=phone_number,
+            role=user,
         )
 
+        user_info_db = User.objects.get(username=username)
+        
+        ser_user = UserSerializer(user_info_db).data
         return Response(
-            {"message": f"{type_of_user} created successfully"},
+            {
+                "message": f"{type_of_user} created successfully",
+                "user": ser_user,
+            },
             status=status.HTTP_201_CREATED,
         )
     except ValidationError as e:
@@ -62,15 +69,12 @@ def user_login(request):
 
     user = authenticate(request, username=username, password=password)
 
-    if user is not None:
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
-        refresh_token = str(refresh)
-
+    if user:
+        user_info = User.objects.get(username=username)
+        ser_user = UserSerializer(user_info).data
         return Response(
             {
-                "access_token": access_token,
-                "refresh_token": refresh_token,
+                "user": ser_user,
             },
             status=status.HTTP_200_OK,
         )
@@ -80,13 +84,8 @@ def user_login(request):
             {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
         )
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def user_logout(request):
-    logout(request)
-    return Response({"message": "Successfully logged out."})
 
-
+@login_required
 @api_view(["GET", "DELETE"])
 def client_requests(request, client_id):
     client = get_object_or_404(Client, id=client_id)
@@ -111,6 +110,7 @@ def client_requests(request, client_id):
         )
 
 
+@login_required
 @api_view(["GET", "DELETE"])
 def client_requests_id(request, client_id, request_id):
     client = get_object_or_404(Client, id=client_id)
@@ -142,6 +142,7 @@ def client_requests_id(request, client_id, request_id):
         )
 
 
+@login_required
 @api_view(["GET"])
 def delivery_requests(request, delivery_id):
     if request.method == "GET":
@@ -160,6 +161,7 @@ def delivery_requests(request, delivery_id):
         )
 
 
+@login_required
 @api_view(["GET", "DELETE"])
 def delivery_list(request, delivery_id):
     delivery_person = get_object_or_404(Deliver, id=delivery_id)
@@ -184,6 +186,7 @@ def delivery_list(request, delivery_id):
         )
 
 
+@login_required
 @api_view(["GET", "PUT", "DELETE"])
 def delivery_list_request_id(request, delivery_id, request_id):
     delivery_person = get_object_or_404(Deliver, id=delivery_id)
