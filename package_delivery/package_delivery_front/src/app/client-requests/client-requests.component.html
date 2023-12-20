@@ -5,18 +5,17 @@
     <div class="col-md-12">
       <div class="card bg-white mb-5">
         <div class="card-header clearfix border-bottom mb-4">
-          <h4 class="card-title">Delivery Requests</h4>
+          <h4 class="card-title">My Requests</h4>
         </div>
 
         <div class="card-body" *ngFor="let item of listOfRequests">
-          <!-- <div *ngFor="let request of item"> -->
           <ul class="list-unstyled">
             <li class="position-relative booking">
               <div class="media">
                 <div class="msg-img"></div>
                 <div class="media-body">
                   <h5 class="mb-4">
-                    "title"
+                    Status:
                     <span class="badge bg-danger mx-3">Pending</span
                     ><span class="badge bg-primary mx-3">In Progress</span>
                     <span class="badge bg-success">Complete</span>
@@ -57,11 +56,15 @@
                       client.username
                     }}</span>
                     <span class="border-right pr-2 mr-2"
-                      ><a href="mailto:{{client.email}}"
-                        >{{client.email}}</a
-                      ></span
+                      ><a href="mailto:{{ client.email }}">{{
+                        client.email
+                      }}</a></span
                     >
-                    <span><a href="tel:{{client.phone_number}}">{{client.phone_number}}</a></span>
+                    <span
+                      ><a href="tel:{{ client.phone_number }}">{{
+                        client.phone_number
+                      }}</a></span
+                    >
                   </div>
                 </div>
               </div>
@@ -72,7 +75,6 @@
               </div>
             </li>
           </ul>
-          <!-- </div> -->
         </div>
       </div>
     </div>
@@ -81,4 +83,11 @@
 
 <div class="fixed-button">
   <a href="/add-request" class="btn btn-primary btn-lg rounded-circle"> + </a>
+</div>
+
+<!-- Button to remove all requests -->
+<div class="text-center mb-3">
+  <button class="btn-danger btn-lg" (click)="removeAllRequests()">
+    Remove All
+  </button>
 </div>

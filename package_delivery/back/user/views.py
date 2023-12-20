@@ -137,6 +137,7 @@ def client_requests(request, client_id):
         }
         return Response(data)
 
+
     elif request.method == "DELETE":
         Request.objects.filter(creator=client).delete()
         return Response({"message": "Client requests deleted successfully"})
