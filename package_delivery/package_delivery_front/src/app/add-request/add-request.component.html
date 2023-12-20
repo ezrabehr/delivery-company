@@ -1,53 +1,65 @@
 <app-header></app-header>
-<br>
+<br />
 <div class="container register-form">
   <div class="form">
     <div class="note">
       <h1>New Request</h1>
     </div>
 
-    <div class="form-content">
-      <div class="row">
-        <div class="col-md-6">
-          <div class="mb-3">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="To:"
-              value=""
-            />
+    <form [formGroup]="requestForm" (ngSubmit)="submitForm()">
+      <div class="form-content">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="mb-3">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="To:"
+                formControlName="to"
+              />
+            </div>
+            <div class="mb-3">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="From:"
+                formControlName="from"
+              />
+            </div>
           </div>
-          <div class="mb-3">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="From:"
-              value=""
-            />
+          <div class="col-md-6">
+            <div class="mb-3">
+              <select
+                class="form-select"
+                aria-label="Package Size"
+                formControlName="packageSize"
+              >
+                <option value="" disabled>Select Package Size</option>
+                <option value="small">Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Willing to Pay:"
+                formControlName="payment"
+              />
+            </div>
           </div>
-        </div>
-        <div class="col-md-6">
-          <div class="mb-3">
-            <select class="form-select" aria-label="Package Size">
-              <option selected disabled>Select Package Size</option>
-              <option value="small">Small</option>
-              <option value="medium">Medium</option>
-              <option value="large">Large</option>
-            </select>
+          <div class="col-md-12 text-center">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="!requestForm.valid"
+            >
+              Submit
+            </button>
           </div>
-          <div class="mb-3">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Willing to Pay:"
-              value=""
-            />
-          </div>
-        </div>
-        <div class="col-md-12">
-          <button type="button" class="btn btn-primary">Submit</button>
         </div>
       </div>
-    </div>
+    </form>
   </div>
 </div>

@@ -35,8 +35,8 @@ export class SignUpComponent {
     const credentials = this.signUpForm.value;
     console.log(credentials);
 
-    const loginURL = 'http://127.0.0.1:8000/signup';
-    this.http.post(loginURL, credentials).subscribe(
+    const signUpURL = 'http://127.0.0.1:8000/signup';
+    this.http.post(signUpURL, credentials).subscribe(
       (response: any) => {
         console.log('authentication succcessful', response);
         

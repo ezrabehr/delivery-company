@@ -12,6 +12,7 @@ from .serializers import RequestUpdateSerializer, UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.decorators import login_required
 
+
 @api_view(["POST"])
 def user_signup(request):
     username = request.data.get("username")
@@ -49,7 +50,7 @@ def user_signup(request):
         )
 
         user_info_db = User.objects.get(username=username)
-        
+
         ser_user = UserSerializer(user_info_db).data
         return Response(
             {
@@ -85,10 +86,41 @@ def user_login(request):
         )
 
 
-@login_required
-@api_view(["GET", "DELETE"])
+@api_view(["POST", "GET", "DELETE"])
 def client_requests(request, client_id):
-    client = get_object_or_404(Client, id=client_id)
+    client = get_object_or_404(Client, user_ptr_id=client_id)
+
+    if request.method == "POST":
+        destination = request.data.get("to")
+        current = request.data.get("from")
+        package_size = request.data.get("packageSize")
+        price = request.data.get("payment")
+
+        try:
+            Request.objects.create(
+                # request=request,
+                current=current,
+                destination=destination,
+                package_size=package_size,
+                price=price,
+                creator=client,
+            )
+
+            return Response(
+                {"message": "request created successfully"},
+                status=status.HTTP_201_CREATED,
+            )
+
+        except User.DoesNotExist:
+            return Response(
+                {"error": "client not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     if request.method == "GET":
         client_requests = Request.objects.filter(creator=client)
