@@ -1,3 +1,4 @@
+from contextlib import nullcontext
 from django.forms import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
@@ -223,22 +224,33 @@ def add_deliver_to_request(request, delivery_id, request_id):
         )
 
 
-@login_required
 @api_view(["GET", "DELETE"])
 def delivery_list(request, delivery_id):
-    delivery_person = get_object_or_404(Deliver, id=delivery_id)
+    deliver = get_object_or_404(Deliver, user_ptr_id=delivery_id)
 
     if request.method == "GET":
-        # Use the related_name to get all requests associated with the delivery person
-        delivery_requests = Request.objects.filter(delivery=delivery_person)
-        serializer = UserSerializer(delivery_requests, many=True)
+        delivery_requests = Request.objects.filter(delivery_id=deliver)
+        del_ser = RequestSerializer(delivery_requests, many=True).data
 
-        return Response({"delivery_requests": serializer.data})
+        # getting all clients who created a request
+        creator_ids = set(request.creator_id for request in delivery_requests)
+        creators = User.objects.filter(id__in=creator_ids)
+        ser_creators = UserSerializer(creators, many=True).data
+        creators_list = list(ser_creators)
+
+        data = {
+            "requests": del_ser,
+            "creators": creators_list,
+        }
+        return Response(data)
 
     elif request.method == "DELETE":
         # Delete all requests associated with the delivery person
-        Request.objects.filter(delivery=delivery_person).delete()
-
+        deleted_requests = Request.objects.filter(delivery_id=deliver)
+        for request in deleted_requests:
+            print(request)
+            request.delivery_id = None
+            request.save()
         return Response({"message": "All delivery requests deleted successfully"})
 
     else:
@@ -248,23 +260,23 @@ def delivery_list(request, delivery_id):
         )
 
 
-@login_required
-@api_view(["GET", "PUT", "DELETE"])
+@api_view(["PUT", "DELETE"])
 def delivery_list_request_id(request, delivery_id, request_id):
-    delivery_person = get_object_or_404(Deliver, id=delivery_id)
+    delivery_person = get_object_or_404(Deliver, user_ptr_id=delivery_id)
     specific_request = get_object_or_404(
-        Request, id=request_id, delivery=delivery_person
+        Request, id=request_id, delivery_id=delivery_person
     )
 
-    if request.method == "GET":
-        # Serialize and return the specific request associated with the delivery person
-        serializer = UserSerializer(specific_request)
-        return Response({"specific_request": serializer.data})
+    # if request.method == "GET":
+    #     # Serialize and return the specific request associated with the delivery person
+    #     serializer = UserSerializer(specific_request)
+    #     return Response({"specific_request": serializer.data})
 
-    elif request.method == "PUT":
-        # Update the specific request if needed
-        # You need to handle the request data and update the specific_request fields accordingly
-        # For simplicity, let's assume you have a RequestUpdateSerializer for partial updates
+    if request.method == "PUT":
+        print(request.data.get("status"))
+        specific_request.status = request.data.get("status")
+        specific_request.save()
+
         serializer = RequestUpdateSerializer(
             specific_request, data=request.data, partial=True
         )
@@ -275,8 +287,8 @@ def delivery_list_request_id(request, delivery_id, request_id):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == "DELETE":
-        # Remove the association between the delivery person and the specific request
-        specific_request.delete(deletion_context="delivery")
+        specific_request.delivery_id = None
+        specific_request.save()
 
         return Response(
             {"message": "Delivery association with the request removed successfully"}

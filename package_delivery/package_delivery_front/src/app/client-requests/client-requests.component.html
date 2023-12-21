@@ -16,9 +16,9 @@
                 <div class="media-body">
                   <h5 class="mb-4">
                     Status:
-                    <span class="badge bg-danger mx-3">Pending</span
-                    ><span class="badge bg-primary mx-3">In Progress</span>
-                    <span class="badge bg-success">Complete</span>
+                    <span *ngIf="item['status'] === 'pending'" class="badge bg-danger mx-3">Pending</span
+                    ><span  *ngIf="item['status'] === 'in_progress'" class="badge bg-primary mx-3">In Progress</span>
+                    <span  *ngIf="item['status'] === 'complete'" class="badge bg-success mx-3">Complete</span>
                   </h5>
 
                   <div class="mb-3">
