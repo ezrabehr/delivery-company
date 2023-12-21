@@ -52,6 +52,9 @@ class Request(models.Model):
             f"Creator: {self.creator}, Delivery: {self.delivery}"
         )
 
+    # def create_request(request, current, destination, package_size, price, creator):
+
+
     def submit(self, current, destination, package_size, price, creator):
         # Create a new Request and save it to the database
         new_request = Request.objects.create(

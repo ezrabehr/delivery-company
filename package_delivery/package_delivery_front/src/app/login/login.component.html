@@ -36,7 +36,6 @@
                       class="form-control"
                       placeholder="Username"
                       formControlName="username"
-                      required
                     />
                   </div>
                 </div>
@@ -52,13 +51,16 @@
                       class="form-control"
                       placeholder="Password"
                       formControlName="password"
-                      required
                     />
                   </div>
                 </div>
                 <div class="row justify-content-center">
                   <div class="col-md-6">
-                    <button type="submit" class="btn btn-primary px-4">
+                    <button
+                      type="submit"
+                      class="btn btn-primary px-4"
+                      [disabled]="!profileForm.valid"
+                    >
                       Login
                     </button>
                   </div>

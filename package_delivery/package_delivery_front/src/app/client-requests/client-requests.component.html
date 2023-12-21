@@ -5,16 +5,17 @@
     <div class="col-md-12">
       <div class="card bg-white mb-5">
         <div class="card-header clearfix border-bottom mb-4">
-          <h4 class="card-title">Delivery Requests</h4>
+          <h4 class="card-title">My Requests</h4>
         </div>
-        <div class="card-body">
+
+        <div class="card-body" *ngFor="let item of listOfRequests">
           <ul class="list-unstyled">
             <li class="position-relative booking">
               <div class="media">
                 <div class="msg-img"></div>
                 <div class="media-body">
                   <h5 class="mb-4">
-                    "title"
+                    Status:
                     <span class="badge bg-danger mx-3">Pending</span
                     ><span class="badge bg-primary mx-3">In Progress</span>
                     <span class="badge bg-success">Complete</span>
@@ -24,38 +25,46 @@
                     <span class="mr-2 d-block d-sm-inline-block mb-2 mb-sm-0"
                       >From:</span
                     >
-                    <span class="bg-light-blue">"location"</span>
+                    <span class="bg-light-blue">{{ item["current"] }} </span>
                   </div>
                   <div class="mb-3">
                     <span class="mr-2 d-block d-sm-inline-block mb-2 mb-sm-0"
                       >To:</span
                     >
-                    <span class="bg-light-blue">"location"</span>
+                    <span class="bg-light-blue">{{ item["destination"] }}</span>
                   </div>
                   <div class="mb-3">
                     <span class="mr-2 d-block d-sm-inline-block mb-2 mb-sm-0"
                       >Package Size:</span
                     >
-                    <span class="bg-light-blue">"Small/Medium/Large"</span>
+                    <span class="bg-light-blue">{{
+                      item["package_size"]
+                    }}</span>
                   </div>
                   <div class="mb-3">
                     <span class="mr-2 d-block d-sm-inline-block mb-2 mb-sm-0"
                       >Price:</span
                     >
-                    <span class="bg-light-blue">$147</span>
+                    <span class="bg-light-blue">{{ item["price"] }}</span>
                   </div>
 
                   <div class="mb-5">
                     <span class="mr-2 d-block d-sm-inline-block mb-1 mb-sm-0"
                       >Clients:</span
                     >
-                    <span class="border-right pr-2 mr-2">Jaime Cressey</span>
+                    <span class="border-right pr-2 mr-2">{{
+                      client.username
+                    }}</span>
                     <span class="border-right pr-2 mr-2"
-                      ><a href="mailto:jaime@example.com"
-                        >jaimeexample.com</a
-                      ></span
+                      ><a href="mailto:{{ client.email }}">{{
+                        client.email
+                      }}</a></span
                     >
-                    <span><a href="tel:355-456-789">355-456-789</a></span>
+                    <span
+                      ><a href="tel:{{ client.phone_number }}">{{
+                        client.phone_number
+                      }}</a></span
+                    >
                   </div>
                 </div>
               </div>
@@ -74,4 +83,11 @@
 
 <div class="fixed-button">
   <a href="/add-request" class="btn btn-primary btn-lg rounded-circle"> + </a>
+</div>
+
+<!-- Button to remove all requests -->
+<div class="text-center mb-3">
+  <button class="btn-danger btn-lg" (click)="removeAllRequests()">
+    Remove All
+  </button>
 </div>

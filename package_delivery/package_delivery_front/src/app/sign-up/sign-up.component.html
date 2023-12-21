@@ -21,7 +21,6 @@
                 id="userName"
                 placeholder="User Name"
                 formControlName="username"
-                required
               />
             </div>
             <div class="mb-3">
@@ -32,7 +31,6 @@
                 id="firstName"
                 placeholder="UseFirst Name"
                 formControlName="firstName"
-                required
               />
             </div>
             <div class="mb-3">
@@ -43,7 +41,6 @@
                 id="lastName"
                 placeholder="Last Name"
                 formControlName="lastName"
-                required
               />
             </div>
             <div class="mb-3">
@@ -54,7 +51,6 @@
                 id="email"
                 placeholder="Email Address"
                 formControlName="email"
-                required
               />
             </div>
             <div class="mb-3">
@@ -65,7 +61,6 @@
                 id="password"
                 placeholder="Password"
                 formControlName="password"
-                required
               />
             </div>
             <div class="mb-3">
@@ -78,7 +73,6 @@
                 id="confirmPassword"
                 placeholder="Confirm Password"
                 formControlName="confirmPassword"
-                required
               />
             </div>
             <div class="mb-3">
@@ -89,7 +83,6 @@
                 id="phone"
                 placeholder="Phone Number"
                 formControlName="phoneNumber"
-                required
               />
             </div>
             <div class="mb-3">
@@ -98,7 +91,6 @@
                 class="form-select"
                 id="user"
                 formControlName="user"
-                required
               >
                 <option value="">Select User Type</option>
                 <option value="client">Client</option>
@@ -110,8 +102,7 @@
               <a href="/login">Login</a></span
             >
             <div class="mb-3"></div>
-            <!-- Add some spacing here -->
-            <button type="submit" class="btn btn-primary signup">
+            <button type="submit" class="btn btn-primary signup" [disabled]="!signUpForm.valid" >
               Create Account
             </button>
           </form>

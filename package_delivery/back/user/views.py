@@ -8,9 +8,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from .serializers import RequestUpdateSerializer, UserSerializer
+from .serializers import RequestSerializer, RequestUpdateSerializer, UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.decorators import login_required
+
 
 @api_view(["POST"])
 def user_signup(request):
@@ -49,7 +50,7 @@ def user_signup(request):
         )
 
         user_info_db = User.objects.get(username=username)
-        
+
         ser_user = UserSerializer(user_info_db).data
         return Response(
             {
@@ -85,20 +86,57 @@ def user_login(request):
         )
 
 
-@login_required
-@api_view(["GET", "DELETE"])
+@api_view(["POST", "GET", "DELETE"])
 def client_requests(request, client_id):
-    client = get_object_or_404(Client, id=client_id)
+    client = get_object_or_404(Client, user_ptr_id=client_id)
+
+    if request.method == "POST":
+        destination = request.data.get("to")
+        current = request.data.get("from")
+        package_size = request.data.get("packageSize")
+        price = request.data.get("payment")
+
+        try:
+            Request.objects.create(
+                # request=request,
+                current=current,
+                destination=destination,
+                package_size=package_size,
+                price=price,
+                creator=client,
+            )
+
+            return Response(
+                {"message": "request created successfully"},
+                status=status.HTTP_201_CREATED,
+            )
+
+        except User.DoesNotExist:
+            return Response(
+                {"error": "client not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     if request.method == "GET":
         client_requests = Request.objects.filter(creator=client)
-        serializer = UserSerializer(client_requests, many=True)
+        serializer = RequestSerializer(client_requests, many=True).data
 
         data = {
-            "client_requests": serializer.data,
-            "client": {"id": client.id, "username": client.username},
+            "client_requests": serializer,
+            "client": {
+                "id": client.id,
+                "username": client.username,
+                "email": client.email,
+                "phone_number": client.phone_number,
+            },
         }
         return Response(data)
+
 
     elif request.method == "DELETE":
         Request.objects.filter(creator=client).delete()
@@ -110,26 +148,25 @@ def client_requests(request, client_id):
         )
 
 
-@login_required
-@api_view(["GET", "DELETE"])
+@api_view(["DELETE"])
 def client_requests_id(request, client_id, request_id):
-    client = get_object_or_404(Client, id=client_id)
+    client = get_object_or_404(Client, user_ptr_id=client_id)
     specific_request = get_object_or_404(Request, id=request_id, creator=client)
 
-    if request.method == "GET":
-        # Serialize the specific_request and client instances
-        request_serializer = UserSerializer(specific_request)
-        client_serializer = UserSerializer(client)
+    # if request.method == "GET":
+    #     # Serialize the specific_request and client instances
+    #     request_serializer = RequestSerializer(specific_request)
+    #     client_serializer = UserSerializer(client)
 
-        data = {
-            "specific_request": request_serializer.data,
-            "client": client_serializer.data,
-        }
+    #     data = {
+    #         "specific_request": request_serializer.data,
+    #         "client": client_serializer.data,
+    #     }
 
-        return Response(data)
+    #     return Response(data)
 
-    elif request.method == "DELETE":
-        # Delete the specific_request
+    if request.method == "DELETE":
+
         specific_request.delete()
 
         return Response({"message": "Specific request deleted successfully"})

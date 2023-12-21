@@ -8,14 +8,14 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
-import { HeaderComponent } from "../header/header.component";
+import { HeaderComponent } from '../header/header.component';
 
 @Component({
-    selector: 'app-sign-up',
-    standalone: true,
-    templateUrl: './sign-up.component.html',
-    styleUrl: './sign-up.component.scss',
-    imports: [CommonModule, RouterOutlet, ReactiveFormsModule, HeaderComponent]
+  selector: 'app-sign-up',
+  standalone: true,
+  templateUrl: './sign-up.component.html',
+  styleUrl: './sign-up.component.scss',
+  imports: [CommonModule, RouterOutlet, ReactiveFormsModule, HeaderComponent],
 })
 export class SignUpComponent {
   constructor(private router: Router, private http: HttpClient) {}
@@ -35,11 +35,10 @@ export class SignUpComponent {
     const credentials = this.signUpForm.value;
     console.log(credentials);
 
-    const loginURL = 'http://127.0.0.1:8000/signup';
-    this.http.post(loginURL, credentials).subscribe(
+    const signUpURL = 'http://127.0.0.1:8000/signup';
+    this.http.post(signUpURL, credentials).subscribe(
       (response: any) => {
         console.log('authentication succcessful', response);
-        
 
         sessionStorage.setItem('username', response.user.username);
         sessionStorage.setItem('first_name', response.user.first_name);
@@ -48,7 +47,7 @@ export class SignUpComponent {
         sessionStorage.setItem('phone_number', response.user.phone_number);
         sessionStorage.setItem('email', response.user.email);
         sessionStorage.setItem('userType', response.user.role);
-        
+        sessionStorage.setItem('id', response.user.id);
 
         this.router.navigate(['/home']);
       },
