@@ -137,7 +137,6 @@ def client_requests(request, client_id):
         }
         return Response(data)
 
-
     elif request.method == "DELETE":
         Request.objects.filter(creator=client).delete()
         return Response({"message": "Client requests deleted successfully"})
@@ -166,7 +165,6 @@ def client_requests_id(request, client_id, request_id):
     #     return Response(data)
 
     if request.method == "DELETE":
-
         specific_request.delete()
 
         return Response({"message": "Specific request deleted successfully"})
@@ -179,17 +177,44 @@ def client_requests_id(request, client_id, request_id):
         )
 
 
-@login_required
 @api_view(["GET"])
 def delivery_requests(request, delivery_id):
+    get_object_or_404(Deliver, user_ptr_id=delivery_id)
+
     if request.method == "GET":
-        # Uncomment if necessary
-        # deliver = get_object_or_404(Deliver, id=delivery_id)
-
+        # getting all requests
         all_requests = Request.objects.all()
-        serializer = UserSerializer(all_requests, many=True)
+        ser_requests = RequestSerializer(all_requests, many=True).data
 
-        return Response({"requests": serializer.data})
+        # getting all clients who created a request
+        creator_ids = set(request.creator_id for request in all_requests)
+        creators = User.objects.filter(id__in=creator_ids)
+        ser_creators = UserSerializer(creators, many=True).data
+        creators_list = list(ser_creators)
+
+        data = {
+            "requests": ser_requests,
+            "creators": creators_list,
+        }
+        return Response(data)
+
+    else:
+        return Response(
+            {"error": "Method not allowed"},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED,
+        )
+
+
+@api_view(["PUT"])
+def add_deliver_to_request(request, delivery_id, request_id):
+    deliver = get_object_or_404(Deliver, user_ptr_id=delivery_id)
+    specific_request = get_object_or_404(Request, id=request_id)
+
+    if request.method == "PUT":
+        specific_request.delivery_id = deliver
+        specific_request.save()
+
+        return Response({"worked": "request was associated to deliver"})
 
     else:
         return Response(

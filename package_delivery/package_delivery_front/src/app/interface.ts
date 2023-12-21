@@ -5,6 +5,7 @@ export interface User {
   password: string;
   phone_number: string;
   username: string;
+  id: number;
 }
 
 export interface UserMini {

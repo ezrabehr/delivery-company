@@ -19,6 +19,11 @@ urlpatterns = [
         delivery_requests,
         name="delivery_requests",
     ),
+    path(
+        "delivery/<int:delivery_id>/request/<int:request_id>",
+        add_deliver_to_request,
+        name="add_deliver_to_request",
+    ),
     path("delivery/<int:delivery_id>/list", delivery_list, name="delivery_list"),
     path(
         "delivery/<int:delivery_id>/list/<int:request_id>",
