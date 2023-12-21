@@ -148,26 +148,25 @@ def client_requests(request, client_id):
         )
 
 
-@login_required
-@api_view(["GET", "DELETE"])
+@api_view(["DELETE"])
 def client_requests_id(request, client_id, request_id):
-    client = get_object_or_404(Client, id=client_id)
+    client = get_object_or_404(Client, user_ptr_id=client_id)
     specific_request = get_object_or_404(Request, id=request_id, creator=client)
 
-    if request.method == "GET":
-        # Serialize the specific_request and client instances
-        request_serializer = UserSerializer(specific_request)
-        client_serializer = UserSerializer(client)
+    # if request.method == "GET":
+    #     # Serialize the specific_request and client instances
+    #     request_serializer = RequestSerializer(specific_request)
+    #     client_serializer = UserSerializer(client)
 
-        data = {
-            "specific_request": request_serializer.data,
-            "client": client_serializer.data,
-        }
+    #     data = {
+    #         "specific_request": request_serializer.data,
+    #         "client": client_serializer.data,
+    #     }
 
-        return Response(data)
+    #     return Response(data)
 
-    elif request.method == "DELETE":
-        # Delete the specific_request
+    if request.method == "DELETE":
+
         specific_request.delete()
 
         return Response({"message": "Specific request deleted successfully"})

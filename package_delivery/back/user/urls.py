@@ -10,18 +10,18 @@ urlpatterns = [
         name="client_requests",
     ),
     path(
-        "client/<str:client_username>/requests/<int:request_id>",
+        "client/<int:client_id>/requests/<int:request_id>",
         client_requests_id,
         name="client_requests_id",
     ),
     path(
-        "delivery/<str:delivery_username>/requests",
+        "delivery/<int:delivery_id>/requests",
         delivery_requests,
         name="delivery_requests",
     ),
-    path("delivery/<str:delivery_username>/list", delivery_list, name="delivery_list"),
+    path("delivery/<int:delivery_id>/list", delivery_list, name="delivery_list"),
     path(
-        "delivery/<str:delivery_username>/list/<int:request_id>",
+        "delivery/<int:delivery_id>/list/<int:request_id>",
         delivery_list_request_id,
         name="delivery_list_request_id",
     ),
