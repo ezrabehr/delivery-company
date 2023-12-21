@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
   imports: [HeaderComponent, CommonModule],
 })
 export class ClientRequestsComponent implements OnInit {
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
   listOfRequests = [];
   client: UserMini = {
@@ -35,7 +35,6 @@ export class ClientRequestsComponent implements OnInit {
         this.client = response.client;
 
         console.log(this.listOfRequests);
-        console.log(this.client.username);
       },
       (error) => {
         console.error('SQL query failed', error);
@@ -50,8 +49,23 @@ export class ClientRequestsComponent implements OnInit {
       (response: any) => {
         console.log('deleted successfully', response);
 
-        this.router.navigate(['/add-request']);
+        window.location.reload();
+      },
+      (error) => {
+        console.error('problem', error);
+      }
+    );
+  }
 
+  removeRequest(request_id: number) {
+    const id: string = sessionStorage.getItem('id')!;
+
+    const addRequestURL = `http://127.0.0.1:8000/client/${id}/requests/${request_id}`;
+    this.http.delete(addRequestURL).subscribe(
+      (response: any) => {
+        console.log('deleted successfully', response);
+
+        window.location.reload();
       },
       (error) => {
         console.error('problem', error);
