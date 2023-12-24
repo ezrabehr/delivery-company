@@ -17,7 +17,7 @@
                   <div class="media-body">
                     <h5 class="mb-4">
                       Status:
-                      <div class="btn-group" role="group" aria-label="Status">
+                      <label class="btn-group" role="group" aria-label="Status">
                         <input
                           type="radio"
                           class="btn-check"
@@ -55,7 +55,6 @@
                           [id]="'complete' + item['id']"
                           autocomplete="off"
                           [checked]="item['status'] === 'complete'"
-
                         />
                         <label
                           class="btn btn-outline-success mx-1"
@@ -63,7 +62,7 @@
                           (click)="statusUpdate('complete', item['id'])"
                           >Complete</label
                         >
-                      </div>
+                      </label>
                     </h5>
 
                     <div class="mb-3">
