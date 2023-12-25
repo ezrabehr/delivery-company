@@ -1,92 +1,102 @@
-from contextlib import nullcontext
 from django.forms import ValidationError
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import authenticate
 from .models import Client, Deliver, User
 from request.models import Request
-from django.core.serializers import serialize
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from .serializers import RequestSerializer, RequestUpdateSerializer, UserSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth.decorators import login_required
+from .serializers import RequestSerializer, UserSerializer
 
 
+# /signup
 @api_view(["POST"])
 def user_signup(request):
-    username = request.data.get("username")
-    first_name = request.data.get("firstName")
-    last_name = request.data.get("lastName")
-    email = request.data.get("email")
-    password = request.data.get("password")
-    confirmPassword = request.data.get("confirmPassword")
-    phone_number = request.data.get("phoneNumber")
-    user = request.data.get("user")
+    if request.method == "POST":
+        username = request.data.get("username")
+        first_name = request.data.get("firstName")
+        last_name = request.data.get("lastName")
+        email = request.data.get("email")
+        password = request.data.get("password")
+        confirmPassword = request.data.get("confirmPassword")
+        phone_number = request.data.get("phoneNumber")
+        user = request.data.get("user")
 
-    type_of_user = None
+        type_of_user = None
 
-    # Check if passwords match
-    if password != confirmPassword:
-        return Response(
-            {"error": "Passwords do not match"}, status=status.HTTP_400_BAD_REQUEST
-        )
+        # Check if passwords match
+        if password != confirmPassword:
+            return Response(
+                {"error": "Passwords do not match"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
-    # Checking what type of user
-    if user == "client":
-        type_of_user = Client
+        # Checking what type of user
+        if user == "client":
+            type_of_user = Client
+        else:
+            type_of_user = Deliver
+
+        try:
+            type_of_user.objects.create_user(
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                password=password,
+                phone_number=phone_number,
+                role=user,
+            )
+
+            user_info_db = User.objects.get(username=username)
+
+            ser_user = UserSerializer(user_info_db).data
+            return Response(
+                {
+                    "message": f"{type_of_user} created successfully",
+                    "user": ser_user,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        except ValidationError as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
     else:
-        type_of_user = Deliver
-
-    try:
-        type_of_user.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-            phone_number=phone_number,
-            role=user,
-        )
-
-        user_info_db = User.objects.get(username=username)
-
-        ser_user = UserSerializer(user_info_db).data
         return Response(
-            {
-                "message": f"{type_of_user} created successfully",
-                "user": ser_user,
-            },
-            status=status.HTTP_201_CREATED,
+            {"error": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
-    except ValidationError as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
+# /login
 @api_view(["POST"])
 def user_login(request):
-    username = request.data.get("username")
-    password = request.data.get("password")
+    if request.method == "POST":
+        username = request.data.get("username")
+        password = request.data.get("password")
 
-    user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=username, password=password)
 
-    if user:
-        user_info = User.objects.get(username=username)
-        ser_user = UserSerializer(user_info).data
-        return Response(
-            {
-                "user": ser_user,
-            },
-            status=status.HTTP_200_OK,
-        )
+        if user:
+            user_info = User.objects.get(username=username)
+            ser_user = UserSerializer(user_info).data
+            return Response(
+                {
+                    "user": ser_user,
+                },
+                status=status.HTTP_200_OK,
+            )
+        else:
+            # Authentication failed
+            return Response(
+                {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
+            )
+
     else:
-        # Authentication failed
         return Response(
-            {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
+            {"error": "Method not allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED
         )
 
 
+# /client/<int:client_id>/requests
 @api_view(["POST", "GET", "DELETE"])
 def client_requests(request, client_id):
     client = get_object_or_404(Client, user_ptr_id=client_id)
@@ -99,7 +109,6 @@ def client_requests(request, client_id):
 
         try:
             Request.objects.create(
-                # request=request,
                 current=current,
                 destination=destination,
                 package_size=package_size,
@@ -123,7 +132,7 @@ def client_requests(request, client_id):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-    if request.method == "GET":
+    elif request.method == "GET":
         client_requests = Request.objects.filter(creator=client)
         serializer = RequestSerializer(client_requests, many=True).data
 
@@ -148,42 +157,30 @@ def client_requests(request, client_id):
         )
 
 
+# /client/<int:client_id>/requests/<int:request_id>
 @api_view(["DELETE"])
 def client_requests_id(request, client_id, request_id):
-    client = get_object_or_404(Client, user_ptr_id=client_id)
-    specific_request = get_object_or_404(Request, id=request_id, creator=client)
-
-    # if request.method == "GET":
-    #     # Serialize the specific_request and client instances
-    #     request_serializer = RequestSerializer(specific_request)
-    #     client_serializer = UserSerializer(client)
-
-    #     data = {
-    #         "specific_request": request_serializer.data,
-    #         "client": client_serializer.data,
-    #     }
-
-    #     return Response(data)
-
     if request.method == "DELETE":
+        client = get_object_or_404(Client, user_ptr_id=client_id)
+        specific_request = get_object_or_404(Request, id=request_id, creator=client)
+
         specific_request.delete()
 
         return Response({"message": "Specific request deleted successfully"})
 
     else:
-        # Return a method not allowed response for other request methods
         return Response(
             {"error": "Method not allowed"},
             status=status.HTTP_405_METHOD_NOT_ALLOWED,
         )
 
 
+# /delivery/<int:delivery_id>/requests
 @api_view(["GET"])
 def delivery_requests(request, delivery_id):
-    get_object_or_404(Deliver, user_ptr_id=delivery_id)
-
     if request.method == "GET":
-        # getting all requests
+        get_object_or_404(Deliver, user_ptr_id=delivery_id)
+
         all_requests = Request.objects.all()
         ser_requests = RequestSerializer(all_requests, many=True).data
 
@@ -206,12 +203,13 @@ def delivery_requests(request, delivery_id):
         )
 
 
+# /delivery/<int:delivery_id>/request/<int:request_id>
 @api_view(["PUT"])
 def add_deliver_to_request(request, delivery_id, request_id):
-    deliver = get_object_or_404(Deliver, user_ptr_id=delivery_id)
-    specific_request = get_object_or_404(Request, id=request_id)
-
     if request.method == "PUT":
+        deliver = get_object_or_404(Deliver, user_ptr_id=delivery_id)
+        specific_request = get_object_or_404(Request, id=request_id)
+
         specific_request.delivery_id = deliver
         specific_request.save()
 
@@ -224,6 +222,7 @@ def add_deliver_to_request(request, delivery_id, request_id):
         )
 
 
+# /delivery/<int:delivery_id>/list
 @api_view(["GET", "DELETE"])
 def delivery_list(request, delivery_id):
     deliver = get_object_or_404(Deliver, user_ptr_id=delivery_id)
@@ -260,6 +259,7 @@ def delivery_list(request, delivery_id):
         )
 
 
+# /delivery/<int:delivery_id>/list/<int:request_id>
 @api_view(["PUT", "DELETE"])
 def delivery_list_request_id(request, delivery_id, request_id):
     delivery_person = get_object_or_404(Deliver, user_ptr_id=delivery_id)
@@ -267,24 +267,11 @@ def delivery_list_request_id(request, delivery_id, request_id):
         Request, id=request_id, delivery_id=delivery_person
     )
 
-    # if request.method == "GET":
-    #     # Serialize and return the specific request associated with the delivery person
-    #     serializer = UserSerializer(specific_request)
-    #     return Response({"specific_request": serializer.data})
-
     if request.method == "PUT":
-        print(request.data.get("status"))
         specific_request.status = request.data.get("status")
         specific_request.save()
 
-        serializer = RequestUpdateSerializer(
-            specific_request, data=request.data, partial=True
-        )
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Request updated successfully"})
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "Request updated successfully"})
 
     elif request.method == "DELETE":
         specific_request.delivery_id = None
