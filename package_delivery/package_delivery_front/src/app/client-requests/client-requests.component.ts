@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { UserMini } from '../interface';
 
@@ -12,9 +11,7 @@ import { UserMini } from '../interface';
   imports: [HeaderComponent, CommonModule],
 })
 export class ClientRequestsComponent implements OnInit {
-  constructor(private http: HttpClient) {}
-
-  listOfRequests = [];
+  listOfRequests: Request[] = [];
   client: UserMini = {
     email: '',
     id: 0,
@@ -23,11 +20,16 @@ export class ClientRequestsComponent implements OnInit {
   };
 
   async ngOnInit(): Promise<void> {
-    const id: string = sessionStorage.getItem('id')!;
-    const addRequestURL = `http://127.0.0.1:8000/client/${id}/requests/`;
+    const clientId: string = sessionStorage.getItem('id')!;
+    const getAllRequestURL: string = `http://127.0.0.1:8000/client/${clientId}/requests`;
 
     try {
-      const response = await fetch(addRequestURL);
+      const response = await fetch(getAllRequestURL, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -38,25 +40,17 @@ export class ClientRequestsComponent implements OnInit {
 
       this.listOfRequests = responseData.client_requests;
       this.client = responseData.client;
-
-      console.log('list: ' + this.listOfRequests);
-
-      if(this.listOfRequests.length == 0){
-        console.log('in');
-        
-      }
     } catch (error) {
       console.error('SQL query failed', error);
-      window.location.reload();
     }
   }
 
   async removeAllRequests() {
-    const id: string = sessionStorage.getItem('id')!;
-    const deleteRequestURL = `http://127.0.0.1:8000/client/${id}/requests/`;
+    const clientId: string = sessionStorage.getItem('id')!;
+    const deleteAllRequestURL = `http://127.0.0.1:8000/client/${clientId}/requests`;
 
     try {
-      const response = await fetch(deleteRequestURL, {
+      const response = await fetch(deleteAllRequestURL, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -69,17 +63,15 @@ export class ClientRequestsComponent implements OnInit {
 
       const responseData = await response.json();
       console.log('deleted successfully', responseData);
-
       window.location.reload();
     } catch (error) {
       console.error('problem', error);
-      window.location.reload();
     }
   }
 
-  async removeRequest(request_id: number) {
-    const id: string = sessionStorage.getItem('id')!;
-    const deleteRequestURL = `http://127.0.0.1:8000/client/${id}/requests/${request_id}`;
+  async removeRequest(requestId: number) {
+    const clientId: string = sessionStorage.getItem('id')!;
+    const deleteRequestURL = `http://127.0.0.1:8000/client/${clientId}/requests/${requestId}`;
 
     try {
       const response = await fetch(deleteRequestURL, {
@@ -99,7 +91,6 @@ export class ClientRequestsComponent implements OnInit {
       window.location.reload();
     } catch (error) {
       console.error('problem', error);
-      window.location.reload();
     }
   }
 }

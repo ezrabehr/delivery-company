@@ -9,7 +9,6 @@ import {
 } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../header/header.component';
-import { User } from '../interface';
 
 @Component({
   selector: 'app-login',
@@ -19,8 +18,8 @@ import { User } from '../interface';
   imports: [CommonModule, RouterOutlet, ReactiveFormsModule, HeaderComponent],
 })
 export class LoginComponent {
-  constructor(private router: Router, private http: HttpClient) {}
-  error_rise: boolean = false;
+  constructor(private router: Router) {}
+  errorRise: boolean = false;
   profileForm = new FormGroup({
     username: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
@@ -28,7 +27,6 @@ export class LoginComponent {
 
   async onSubmit() {
     const credentials = this.profileForm.value;
-    console.log(credentials);
 
     const loginURL = 'http://127.0.0.1:8000/login';
 
@@ -62,7 +60,7 @@ export class LoginComponent {
 
       this.router.navigate(['/home']);
     } catch (error) {
-      this.error_rise = true;
+      this.errorRise = true;
       console.error('Authentication failed', error);
     }
   }

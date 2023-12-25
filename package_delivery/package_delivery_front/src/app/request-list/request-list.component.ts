@@ -11,18 +11,16 @@ import { User } from '../interface';
   imports: [HeaderComponent, CommonModule],
 })
 export class RequestListComponent implements OnInit {
-  constructor(private http: HttpClient) {}
-
   listOfRequests = [];
 
   listOfCreators: User[] = [];
 
   async ngOnInit(): Promise<void> {
-    const id: string = sessionStorage.getItem('id')!;
-    const getRequestURL = `http://127.0.0.1:8000/delivery/${id}/requests`;
+    const deliverId: string = sessionStorage.getItem('id')!;
+    const getRequestListURL = `http://127.0.0.1:8000/delivery/${deliverId}/requests`;
 
     try {
-      const response = await fetch(getRequestURL);
+      const response = await fetch(getRequestListURL);
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -33,21 +31,18 @@ export class RequestListComponent implements OnInit {
 
       this.listOfRequests = responseData.requests;
       this.listOfCreators = responseData.creators;
-
-      console.log(this.listOfRequests);
-      console.log(this.listOfCreators);
     } catch (error) {
       console.error('SQL query failed', error);
     }
   }
 
-  getCreatorById(creator_id: number) {
-    return this.listOfCreators.find((creator) => creator.id === creator_id);
+  getCreatorById(creatorId: number) {
+    return this.listOfCreators.find((creator) => creator.id === creatorId);
   }
 
-  async addRequest(request_id: number): Promise<void> {
-    const id: string = sessionStorage.getItem('id')!;
-    const updateRequestURL = `http://127.0.0.1:8000/delivery/${id}/request/${request_id}`;
+  async addRequest(requestId: number): Promise<void> {
+    const deliverId: string = sessionStorage.getItem('id')!;
+    const updateRequestURL = `http://127.0.0.1:8000/delivery/${deliverId}/request/${requestId}`;
 
     try {
       const response = await fetch(updateRequestURL, {
@@ -55,7 +50,7 @@ export class RequestListComponent implements OnInit {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({}), // You can add data to send in the body if needed
+        body: JSON.stringify({}),
       });
 
       if (!response.ok) {

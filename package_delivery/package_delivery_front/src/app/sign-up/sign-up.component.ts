@@ -6,8 +6,6 @@ import {
   FormGroup,
   Validators,
   ReactiveFormsModule,
-  ValidatorFn,
-  AbstractControl,
 } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../header/header.component';
@@ -20,7 +18,7 @@ import { HeaderComponent } from '../header/header.component';
   imports: [CommonModule, RouterOutlet, ReactiveFormsModule, HeaderComponent],
 })
 export class SignUpComponent {
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router) {}
 
   signUpForm = new FormGroup({
     username: new FormControl('', Validators.required),
@@ -35,7 +33,6 @@ export class SignUpComponent {
 
   async onSubmit() {
     const credentials = this.signUpForm.value;
-    console.log(credentials);
 
     const signUpURL = 'http://127.0.0.1:8000/signup';
 

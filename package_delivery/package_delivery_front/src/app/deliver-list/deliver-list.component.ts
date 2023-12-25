@@ -12,17 +12,15 @@ import { CommonModule } from '@angular/common';
   imports: [HeaderComponent, CommonModule],
 })
 export class DeliverListComponent implements OnInit {
-  constructor(private http: HttpClient) {}
-
   listOfRequests = [];
 
   listOfCreators: User[] = [];
 
   ngOnInit(): void {
-    const id: string = sessionStorage.getItem('id')!;
-    const getRequestURL = `http://127.0.0.1:8000/delivery/${id}/list`;
+    const deliverId: string = sessionStorage.getItem('id')!;
+    const getDeliverListURL = `http://127.0.0.1:8000/delivery/${deliverId}/list`;
 
-    fetch(getRequestURL)
+    fetch(getDeliverListURL)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -34,24 +32,21 @@ export class DeliverListComponent implements OnInit {
 
         this.listOfRequests = data.requests;
         this.listOfCreators = data.creators;
-
-        console.log(this.listOfRequests);
-        console.log(this.listOfCreators);
       })
       .catch((error) => {
         console.error('SQL query failed', error);
       });
   }
 
-  getCreatorById(creator_id: number) {
-    return this.listOfCreators.find((creator) => creator.id === creator_id);
+  getCreatorById(creatorId: number) {
+    return this.listOfCreators.find((creator) => creator.id === creatorId);
   }
 
   removeAllRequests() {
-    const id: string = sessionStorage.getItem('id')!;
-    const deleteRequestURL = `http://127.0.0.1:8000/delivery/${id}/list`;
+    const deliverId: string = sessionStorage.getItem('id')!;
+    const deleteAllRequestURL = `http://127.0.0.1:8000/delivery/${deliverId}/list`;
 
-    fetch(deleteRequestURL, {
+    fetch(deleteAllRequestURL, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -69,21 +64,20 @@ export class DeliverListComponent implements OnInit {
       })
       .catch((error) => {
         console.error('problem', error);
-        window.location.reload();
       });
   }
 
-  statusUpdate(status: string, request_id: number) {
-    const id: string = sessionStorage.getItem('id')!;
-    const addRequestURL = `http://127.0.0.1:8000/delivery/${id}/list/${request_id}`;
-    const status_dict = { status };
+  statusUpdate(status: string, requestId: number) {
+    const deliverId: string = sessionStorage.getItem('id')!;
+    const addRequestURL = `http://127.0.0.1:8000/delivery/${deliverId}/list/${requestId}`;
+    const statusDict = { status };
 
     fetch(addRequestURL, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(status_dict),
+      body: JSON.stringify(statusDict),
     })
       .then((response) => {
         if (!response.ok) {
@@ -101,11 +95,11 @@ export class DeliverListComponent implements OnInit {
       });
   }
 
-  removeRequest(request_id: number) {
-    const id: string = sessionStorage.getItem('id')!;
-    const updateRequestURL = `http://127.0.0.1:8000/delivery/${id}/list/${request_id}`;
+  removeRequest(requestId: number) {
+    const deliverId: string = sessionStorage.getItem('id')!;
+    const removeRequestURL = `http://127.0.0.1:8000/delivery/${deliverId}/list/${requestId}`;
 
-    fetch(updateRequestURL, {
+    fetch(removeRequestURL, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -123,7 +117,6 @@ export class DeliverListComponent implements OnInit {
       })
       .catch((error) => {
         console.error("didn't work", error);
-        window.location.reload();
       });
   }
 }

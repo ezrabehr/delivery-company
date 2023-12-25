@@ -7,7 +7,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -18,9 +17,9 @@ import { CommonModule } from '@angular/common';
   imports: [HeaderComponent, ReactiveFormsModule, CommonModule],
 })
 export class AddRequestComponent {
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router) {}
 
-  requestForm = new FormGroup({
+  addForm: FormGroup = new FormGroup({
     to: new FormControl('', Validators.required),
     from: new FormControl('', Validators.required),
     packageSize: new FormControl('', Validators.required),
@@ -28,15 +27,13 @@ export class AddRequestComponent {
   });
 
   async submitForm() {
-    const request: any = this.requestForm.value;
+    const request: FormGroup = this.addForm.value;
 
-    console.log(request);
-
-    const id: string = sessionStorage.getItem('id')!;
-    const addRequestURL = `http://127.0.0.1:8000/client/${id}/requests/`;
+    const clientId: string = sessionStorage.getItem('id')!;
+    const addRequestURL: string = `http://127.0.0.1:8000/client/${clientId}/requests`;
 
     try {
-      const response = await fetch(addRequestURL, {
+      const response: Response = await fetch(addRequestURL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,7 +45,7 @@ export class AddRequestComponent {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const responseData = await response.json();
+      const responseData : object = await response.json();
       console.log('authentication successful', responseData);
 
       this.router.navigate(['/my-requests']);

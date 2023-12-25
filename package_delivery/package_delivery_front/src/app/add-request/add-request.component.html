@@ -7,7 +7,7 @@
         <h1>New Request</h1>
       </div>
 
-      <form [formGroup]="requestForm" (ngSubmit)="submitForm()">
+      <form [formGroup]="addForm" (ngSubmit)="submitForm()">
         <div class="form-content">
           <div class="row">
             <div class="col-md-6">
@@ -20,9 +20,9 @@
                 />
                 <div
                   *ngIf="
-                    requestForm.get('from')?.invalid &&
-                    (requestForm.get('from')?.dirty ||
-                      requestForm.get('from')?.touched)
+                    addForm.get('from')?.invalid &&
+                    (addForm.get('from')?.dirty ||
+                    addForm.get('from')?.touched)
                   "
                   class="alert"
                 >
@@ -38,9 +38,9 @@
                 />
                 <div
                   *ngIf="
-                    requestForm.get('to')?.invalid &&
-                    (requestForm.get('to')?.dirty ||
-                      requestForm.get('to')?.touched)
+                    addForm.get('to')?.invalid &&
+                    (addForm.get('to')?.dirty ||
+                    addForm.get('to')?.touched)
                   "
                   class="alert"
                 >
@@ -62,9 +62,9 @@
                 </select>
                 <div
                   *ngIf="
-                    requestForm.get('packageSize')?.invalid &&
-                    (requestForm.get('packageSize')?.dirty ||
-                      requestForm.get('packageSize')?.touched)
+                    addForm.get('packageSize')?.invalid &&
+                    (addForm.get('packageSize')?.dirty ||
+                    addForm.get('packageSize')?.touched)
                   "
                   class="alert"
                 >
@@ -81,9 +81,9 @@
                 />
                 <div
                   *ngIf="
-                    requestForm.get('payment')?.invalid &&
-                    (requestForm.get('payment')?.dirty ||
-                      requestForm.get('payment')?.touched)
+                    addForm.get('payment')?.invalid &&
+                    (addForm.get('payment')?.dirty ||
+                    addForm.get('payment')?.touched)
                   "
                   class="alert"
                 >
@@ -95,7 +95,7 @@
               <button
                 type="submit"
                 class="btn btn-primary"
-                [disabled]="!requestForm.valid"
+                [disabled]="!addForm.valid"
               >
                 Submit
               </button>
