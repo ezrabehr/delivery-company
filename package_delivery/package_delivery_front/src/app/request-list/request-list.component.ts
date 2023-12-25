@@ -17,42 +17,57 @@ export class RequestListComponent implements OnInit {
 
   listOfCreators: User[] = [];
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     const id: string = sessionStorage.getItem('id')!;
     const getRequestURL = `http://127.0.0.1:8000/delivery/${id}/requests`;
 
-    this.http.get(getRequestURL).subscribe(
-      (response: any) => {
-        console.log('SQL query successful', response);
+    try {
+      const response = await fetch(getRequestURL);
 
-        this.listOfRequests = response.requests;
-        this.listOfCreators = response.creators;
-
-        console.log(this.listOfRequests);
-        console.log(this.listOfCreators);
-      },
-      (error) => {
-        console.error('SQL query failed', error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    );
+
+      const responseData = await response.json();
+      console.log('SQL query successful', responseData);
+
+      this.listOfRequests = responseData.requests;
+      this.listOfCreators = responseData.creators;
+
+      console.log(this.listOfRequests);
+      console.log(this.listOfCreators);
+    } catch (error) {
+      console.error('SQL query failed', error);
+    }
   }
 
   getCreatorById(creator_id: number) {
     return this.listOfCreators.find((creator) => creator.id === creator_id);
   }
 
-  addRequest(request_id: number) {
+  async addRequest(request_id: number): Promise<void> {
     const id: string = sessionStorage.getItem('id')!;
     const updateRequestURL = `http://127.0.0.1:8000/delivery/${id}/request/${request_id}`;
-    const data = {};
-    this.http.put(updateRequestURL, data).subscribe(
-      (response: any) => {
-        console.log('updated successfully', response);
-        window.location.reload()
-      },
-      (error) => {
-        console.error("didn't work", error);
+
+    try {
+      const response = await fetch(updateRequestURL, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}), // You can add data to send in the body if needed
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    );
+
+      const responseData = await response.json();
+      console.log('updated successfully', responseData);
+
+      window.location.reload();
+    } catch (error) {
+      console.error("didn't work", error);
+    }
   }
 }

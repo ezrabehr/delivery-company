@@ -1,47 +1,72 @@
+// body {
+//     background-color: #f8f9fa;
+//     font-family: 'Arial', sans-serif;
+//   }
+  
+//   .container {
+//     margin-top: 50px;
+//   }
+  
+//   .text-center {
+//     text-align: center;
+//   }
+  
+//   .mb-4 {
+//     margin-bottom: 1.5rem;
+//   }
+  
+//   p {
+//     font-size: 1.1rem;
+//     line-height: 1.6;
+//     color: #6c757d;
+//   }
+  
+//   @media (min-width: 576px) {
+//     .container {
+//       max-width: 540px;
+//     }
+//   }
+  
+//   @media (min-width: 768px) {
+//     .container {
+//       max-width: 720px;
+//     }
+//   }
+  
+//   @media (min-width: 992px) {
+//     .container {
+//       max-width: 960px;
+//     }
+//   }
+  
+//   @media (min-width: 1200px) {
+//     .container {
+//       max-width: 1140px;
+//     }
+//   }
+  
 body {
-    background-color: #f8f9fa;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .container {
-    margin-top: 50px;
-  }
-  
-  .text-center {
-    text-align: center;
-  }
-  
-  .mb-4 {
-    margin-bottom: 1.5rem;
-  }
-  
-  p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #6c757d;
-  }
-  
-  @media (min-width: 576px) {
-    .container {
-      max-width: 540px;
-    }
-  }
-  
-  @media (min-width: 768px) {
-    .container {
-      max-width: 720px;
-    }
-  }
-  
-  @media (min-width: 992px) {
-    .container {
-      max-width: 960px;
-    }
-  }
-  
-  @media (min-width: 1200px) {
-    .container {
-      max-width: 1140px;
-    }
-  }
-  
+  /* Set body styles, such as margin and padding */
+  margin: 0;
+  padding: 0;
+}
+
+.background-image {
+  /* Set background image properties */
+  background-image: url('../../assets/background/blue\ map.jpg'); /* Replace 'path/to/your/image.jpg' with the actual path to your image file */
+  background-size: cover; /* Cover the entire container with the background image */
+  background-position: center; /* Center the background image */
+  background-repeat: no-repeat; /* Do not repeat the background image */
+  height: 100vh; /* Set the height of the container to 100% of the viewport height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  /* Set additional styles for the content container */
+  background-color: rgba(255, 255, 255, 0.8); /* Add a semi-transparent white background to make text readable */
+  padding: 20px;
+  border-radius: 10px; /* Add border-radius for a rounded look */
+}

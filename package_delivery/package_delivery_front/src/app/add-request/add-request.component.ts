@@ -8,13 +8,14 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-add-request',
   standalone: true,
   templateUrl: './add-request.component.html',
   styleUrl: './add-request.component.scss',
-  imports: [HeaderComponent, ReactiveFormsModule],
+  imports: [HeaderComponent, ReactiveFormsModule, CommonModule],
 })
 export class AddRequestComponent {
   constructor(private router: Router, private http: HttpClient) {}
@@ -26,7 +27,7 @@ export class AddRequestComponent {
     payment: new FormControl('', Validators.required),
   });
 
-  submitForm() {
+  async submitForm() {
     const request: any = this.requestForm.value;
 
     console.log(request);
@@ -34,15 +35,25 @@ export class AddRequestComponent {
     const id: string = sessionStorage.getItem('id')!;
     const addRequestURL = `http://127.0.0.1:8000/client/${id}/requests/`;
 
-    this.http.post(addRequestURL, request).subscribe(
-      (response: any) => {
-        console.log('authentication succcessful', response);
+    try {
+      const response = await fetch(addRequestURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+      });
 
-        this.router.navigate(['/my-requests']);
-      },
-      (error) => {
-        console.error('Authentication failed', error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    );
+
+      const responseData = await response.json();
+      console.log('authentication successful', responseData);
+
+      this.router.navigate(['/my-requests']);
+    } catch (error) {
+      console.error('Authentication failed', error);
+    }
   }
 }

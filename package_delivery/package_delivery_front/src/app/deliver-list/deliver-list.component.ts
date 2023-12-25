@@ -22,20 +22,25 @@ export class DeliverListComponent implements OnInit {
     const id: string = sessionStorage.getItem('id')!;
     const getRequestURL = `http://127.0.0.1:8000/delivery/${id}/list`;
 
-    this.http.get(getRequestURL).subscribe(
-      (response: any) => {
-        console.log('SQL query successful', response);
+    fetch(getRequestURL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('SQL query successful', data);
 
-        this.listOfRequests = response.requests;
-        this.listOfCreators = response.creators;
+        this.listOfRequests = data.requests;
+        this.listOfCreators = data.creators;
 
         console.log(this.listOfRequests);
         console.log(this.listOfCreators);
-      },
-      (error) => {
+      })
+      .catch((error) => {
         console.error('SQL query failed', error);
-      }
-    );
+      });
   }
 
   getCreatorById(creator_id: number) {
@@ -44,49 +49,81 @@ export class DeliverListComponent implements OnInit {
 
   removeAllRequests() {
     const id: string = sessionStorage.getItem('id')!;
-    const addRequestURL = `http://127.0.0.1:8000/delivery/${id}/list`;
-    this.http.delete(addRequestURL).subscribe(
-      (response: any) => {
-        console.log('deleted successfully', response);
+    const deleteRequestURL = `http://127.0.0.1:8000/delivery/${id}/list`;
 
-        window.location.reload();
+    fetch(deleteRequestURL, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      (error) => {
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('deleted successfully', data);
+        window.location.reload();
+      })
+      .catch((error) => {
         console.error('problem', error);
-      }
-    );
+        window.location.reload();
+      });
   }
 
   statusUpdate(status: string, request_id: number) {
     const id: string = sessionStorage.getItem('id')!;
     const addRequestURL = `http://127.0.0.1:8000/delivery/${id}/list/${request_id}`;
-    const status_dict = {
-      status: status,
-    };
-    this.http.put(addRequestURL, status_dict).subscribe(
-      (response: any) => {
-        console.log('updated successfully', response);
+    const status_dict = { status };
 
-        window.location.reload();
+    fetch(addRequestURL, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      (error) => {
+      body: JSON.stringify(status_dict),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('updated successfully', data);
+        window.location.reload();
+      })
+      .catch((error) => {
         console.error('problem', error);
-      }
-    );
+        window.location.reload();
+      });
   }
 
   removeRequest(request_id: number) {
     const id: string = sessionStorage.getItem('id')!;
     const updateRequestURL = `http://127.0.0.1:8000/delivery/${id}/list/${request_id}`;
-    const data = {};
-    this.http.delete(updateRequestURL, data).subscribe(
-      (response: any) => {
-        console.log('removed successfully', response);
-        window.location.reload();
+
+    fetch(updateRequestURL, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      (error) => {
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('removed successfully', data);
+        window.location.reload();
+      })
+      .catch((error) => {
         console.error("didn't work", error);
-      }
-    );
+        window.location.reload();
+      });
   }
 }

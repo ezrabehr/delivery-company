@@ -22,6 +22,16 @@
                 placeholder="User Name"
                 formControlName="username"
               />
+              <div
+                *ngIf="
+                  signUpForm.get('username')?.invalid &&
+                  (signUpForm.get('username')?.dirty ||
+                    signUpForm.get('username')?.touched)
+                "
+                class="alert"
+              >
+                Username is required
+              </div>
             </div>
             <div class="mb-3">
               <label for="firstName" class="form-label">First Name</label>
@@ -32,6 +42,16 @@
                 placeholder="UseFirst Name"
                 formControlName="firstName"
               />
+              <div
+                *ngIf="
+                  signUpForm.get('firstName')?.invalid &&
+                  (signUpForm.get('firstName')?.dirty ||
+                    signUpForm.get('firstName')?.touched)
+                "
+                class="alert"
+              >
+                First name is required
+              </div>
             </div>
             <div class="mb-3">
               <label for="lastName" class="form-label">last Name</label>
@@ -42,6 +62,16 @@
                 placeholder="Last Name"
                 formControlName="lastName"
               />
+              <div
+                *ngIf="
+                  signUpForm.get('lastName')?.invalid &&
+                  (signUpForm.get('lastName')?.dirty ||
+                    signUpForm.get('lastName')?.touched)
+                "
+                class="alert"
+              >
+                Last name is required
+              </div>
             </div>
             <div class="mb-3">
               <label for="email" class="form-label">Email</label>
@@ -52,6 +82,22 @@
                 placeholder="Email Address"
                 formControlName="email"
               />
+
+              <div
+                *ngIf="
+                  signUpForm.get('email')?.invalid &&
+                  (signUpForm.get('email')?.dirty ||
+                    signUpForm.get('email')?.touched)
+                "
+                class="alert"
+              >
+                <div *ngIf="signUpForm.get('email')?.errors?.['required']">
+                  Email is required.
+                </div>
+                <div *ngIf="signUpForm.get('email')?.errors?.['email']">
+                  Enter valid email.
+                </div>
+              </div>
             </div>
             <div class="mb-3">
               <label for="password" class="form-label">Password</label>
@@ -62,6 +108,16 @@
                 placeholder="Password"
                 formControlName="password"
               />
+              <div
+                *ngIf="
+                  signUpForm.get('password')?.invalid &&
+                  (signUpForm.get('password')?.dirty ||
+                    signUpForm.get('password')?.touched)
+                "
+                class="alert"
+              >
+                Password is required
+              </div>
             </div>
             <div class="mb-3">
               <label for="confirmPassword" class="form-label"
@@ -74,6 +130,16 @@
                 placeholder="Confirm Password"
                 formControlName="confirmPassword"
               />
+              <div
+                *ngIf="
+                  signUpForm.get('confirmPassword')?.invalid &&
+                  (signUpForm.get('confirmPassword')?.dirty ||
+                    signUpForm.get('confirmPassword')?.touched)
+                "
+                class="alert"
+              >
+                Confirm password is required
+              </div>
             </div>
             <div class="mb-3">
               <label for="phone" class="form-label">Phone No.</label>
@@ -84,25 +150,45 @@
                 placeholder="Phone Number"
                 formControlName="phoneNumber"
               />
+              <div
+                *ngIf="
+                  signUpForm.get('phoneNumber')?.invalid &&
+                  (signUpForm.get('phoneNumber')?.dirty ||
+                    signUpForm.get('phoneNumber')?.touched)
+                "
+                class="alert"
+              >
+                Phone number is required
+              </div>
             </div>
             <div class="mb-3">
               <label for="user" class="form-label">User</label>
-              <select
-                class="form-select"
-                id="user"
-                formControlName="user"
-              >
+              <select class="form-select" id="user" formControlName="user">
                 <option value="">Select User Type</option>
                 <option value="client">Client</option>
                 <option value="deliver">Deliver</option>
               </select>
+              <div
+                *ngIf="
+                  signUpForm.get('user')?.invalid &&
+                  (signUpForm.get('user')?.dirty ||
+                    signUpForm.get('user')?.touched)
+                "
+                class="alert"
+              >
+                User type is required
+              </div>
             </div>
             <span class="signin-link"
               >Already have an account? Click here to
               <a href="/login">Login</a></span
             >
             <div class="mb-3"></div>
-            <button type="submit" class="btn btn-primary signup" [disabled]="!signUpForm.valid" >
+            <button
+              type="submit"
+              class="btn btn-primary signup"
+              [disabled]="!signUpForm.valid"
+            >
               Create Account
             </button>
           </form>

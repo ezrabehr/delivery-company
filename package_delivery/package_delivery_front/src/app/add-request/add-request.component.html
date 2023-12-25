@@ -1,65 +1,108 @@
-<app-header></app-header>
-<br />
-<div class="container register-form">
-  <div class="form">
-    <div class="note">
-      <h1>New Request</h1>
-    </div>
+<body>
+  <app-header></app-header>
+  <br />
+  <div class="container register-form">
+    <div class="form">
+      <div class="note">
+        <h1>New Request</h1>
+      </div>
 
-    <form [formGroup]="requestForm" (ngSubmit)="submitForm()">
-      <div class="form-content">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="mb-3">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="To:"
-                formControlName="to"
-              />
+      <form [formGroup]="requestForm" (ngSubmit)="submitForm()">
+        <div class="form-content">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="From:"
+                  formControlName="from"
+                />
+                <div
+                  *ngIf="
+                    requestForm.get('from')?.invalid &&
+                    (requestForm.get('from')?.dirty ||
+                      requestForm.get('from')?.touched)
+                  "
+                  class="alert"
+                >
+                  From is required
+                </div>
+              </div>
+              <div class="mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="To:"
+                  formControlName="to"
+                />
+                <div
+                  *ngIf="
+                    requestForm.get('to')?.invalid &&
+                    (requestForm.get('to')?.dirty ||
+                      requestForm.get('to')?.touched)
+                  "
+                  class="alert"
+                >
+                  To is required
+                </div>
+              </div>
             </div>
-            <div class="mb-3">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="From:"
-                formControlName="from"
-              />
+            <div class="col-md-6">
+              <div class="mb-3">
+                <select
+                  class="form-select"
+                  aria-label="Package Size"
+                  formControlName="packageSize"
+                >
+                  <option value="" disabled>Select Package Size</option>
+                  <option value="small">Small</option>
+                  <option value="medium">Medium</option>
+                  <option value="large">Large</option>
+                </select>
+                <div
+                  *ngIf="
+                    requestForm.get('packageSize')?.invalid &&
+                    (requestForm.get('packageSize')?.dirty ||
+                      requestForm.get('packageSize')?.touched)
+                  "
+                  class="alert"
+                >
+                  Package size is required
+                </div>
+              </div>
+              <div class="mb-3">
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Willing to Pay:"
+                  formControlName="payment"
+                  min="0"
+                />
+                <div
+                  *ngIf="
+                    requestForm.get('payment')?.invalid &&
+                    (requestForm.get('payment')?.dirty ||
+                      requestForm.get('payment')?.touched)
+                  "
+                  class="alert"
+                >
+                  Payment is required
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="col-md-6">
-            <div class="mb-3">
-              <select
-                class="form-select"
-                aria-label="Package Size"
-                formControlName="packageSize"
+            <div class="col-md-12 text-center">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="!requestForm.valid"
               >
-                <option value="" disabled>Select Package Size</option>
-                <option value="small">Small</option>
-                <option value="medium">Medium</option>
-                <option value="large">Large</option>
-              </select>
+                Submit
+              </button>
             </div>
-            <div class="mb-3">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Willing to Pay:"
-                formControlName="payment"
-              />
-            </div>
-          </div>
-          <div class="col-md-12 text-center">
-            <button
-              type="submit"
-              class="btn btn-primary"
-              [disabled]="!requestForm.valid"
-            >
-              Submit
-            </button>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
+</body>
