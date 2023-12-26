@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import {
   FormControl,
@@ -31,10 +30,10 @@ export class SignUpComponent {
     user: new FormControl('', Validators.required),
   });
 
-  async onSubmit() {
-    const credentials = this.signUpForm.value;
+  async onSubmit(): Promise<void> {
+    const credentials: any = this.signUpForm.value;
 
-    const signUpURL = 'http://127.0.0.1:8000/signup';
+    const signUpURL: string = 'http://127.0.0.1:8000/signup';
 
     try {
       const response = await fetch(signUpURL, {
@@ -49,7 +48,7 @@ export class SignUpComponent {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const responseData = await response.json();
+      const responseData: any = await response.json();
       console.log('authentication successful', responseData);
 
       const user = responseData.user;
@@ -60,7 +59,6 @@ export class SignUpComponent {
       sessionStorage.setItem('password', user.password);
       sessionStorage.setItem('phone_number', user.phone_number);
       sessionStorage.setItem('email', user.email);
-      sessionStorage.setItem('userType', user.role);
       sessionStorage.setItem('id', user.id);
       sessionStorage.setItem('role', user.role);
 

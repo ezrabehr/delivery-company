@@ -9,6 +9,7 @@ import {
 } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../header/header.component';
+import { User } from '../interface';
 
 @Component({
   selector: 'app-login',
@@ -25,13 +26,13 @@ export class LoginComponent {
     password: new FormControl('', Validators.required),
   });
 
-  async onSubmit() {
-    const credentials = this.profileForm.value;
+  async onSubmit(): Promise<void> {
+    const credentials: any = this.profileForm.value;
 
-    const loginURL = 'http://127.0.0.1:8000/login';
+    const loginURL: string = 'http://127.0.0.1:8000/login';
 
     try {
-      const response = await fetch(loginURL, {
+      const response: any = await fetch(loginURL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -43,10 +44,10 @@ export class LoginComponent {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const responseData = await response.json();
+      const responseData: any = await response.json();
       console.log('authentication successful', responseData);
 
-      const user = responseData.user;
+      const user: any = responseData.user;
 
       sessionStorage.setItem('username', user.username);
       sessionStorage.setItem('first_name', user.first_name);
@@ -54,7 +55,6 @@ export class LoginComponent {
       sessionStorage.setItem('password', user.password);
       sessionStorage.setItem('phone_number', user.phone_number);
       sessionStorage.setItem('email', user.email);
-      sessionStorage.setItem('userType', user.role);
       sessionStorage.setItem('id', user.id);
       sessionStorage.setItem('role', user.role);
 

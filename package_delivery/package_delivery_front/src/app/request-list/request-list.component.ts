@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { User } from '../interface';
+import { Requests, User } from '../interface';
 @Component({
   selector: 'app-request-list',
   standalone: true,
@@ -11,13 +11,13 @@ import { User } from '../interface';
   imports: [HeaderComponent, CommonModule],
 })
 export class RequestListComponent implements OnInit {
-  listOfRequests = [];
+  listOfRequests: Requests[] = [];
 
   listOfCreators: User[] = [];
 
   async ngOnInit(): Promise<void> {
     const deliverId: string = sessionStorage.getItem('id')!;
-    const getRequestListURL = `http://127.0.0.1:8000/delivery/${deliverId}/requests`;
+    const getRequestListURL: string = `http://127.0.0.1:8000/delivery/${deliverId}/requests`;
 
     try {
       const response = await fetch(getRequestListURL);
@@ -42,10 +42,10 @@ export class RequestListComponent implements OnInit {
 
   async addRequest(requestId: number): Promise<void> {
     const deliverId: string = sessionStorage.getItem('id')!;
-    const updateRequestURL = `http://127.0.0.1:8000/delivery/${deliverId}/request/${requestId}`;
+    const updateRequestURL: string = `http://127.0.0.1:8000/delivery/${deliverId}/request/${requestId}`;
 
     try {
-      const response = await fetch(updateRequestURL, {
+      const response: any = await fetch(updateRequestURL, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ export class RequestListComponent implements OnInit {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const responseData = await response.json();
+      const responseData: any = await response.json();
       console.log('updated successfully', responseData);
 
       window.location.reload();

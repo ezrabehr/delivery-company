@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
 import { CommonModule } from '@angular/common';
-import { UserMini } from '../interface';
+import { ClientRequestResponse, Requests, UserMini } from '../interface';
 
 @Component({
   selector: 'app-client-requests',
@@ -11,7 +11,7 @@ import { UserMini } from '../interface';
   imports: [HeaderComponent, CommonModule],
 })
 export class ClientRequestsComponent implements OnInit {
-  listOfRequests: Request[] = [];
+  listOfRequests: Requests[] = [];
   client: UserMini = {
     email: '',
     id: 0,
@@ -24,18 +24,21 @@ export class ClientRequestsComponent implements OnInit {
     const getAllRequestURL: string = `http://127.0.0.1:8000/client/${clientId}/requests`;
 
     try {
-      const response = await fetch(getAllRequestURL, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response: ClientRequestResponse | Response = await fetch(
+        getAllRequestURL,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const responseData = await response.json();
+      const responseData: any = await response.json();
       console.log('SQL query successful', responseData);
 
       this.listOfRequests = responseData.client_requests;
@@ -45,23 +48,27 @@ export class ClientRequestsComponent implements OnInit {
     }
   }
 
-  async removeAllRequests() {
+  async removeAllRequests(): Promise<void> {
     const clientId: string = sessionStorage.getItem('id')!;
-    const deleteAllRequestURL = `http://127.0.0.1:8000/client/${clientId}/requests`;
+    const deleteAllRequestURL: string = `http://127.0.0.1:8000/client/${clientId}/requests`;
 
     try {
-      const response = await fetch(deleteAllRequestURL, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response: ClientRequestResponse | Response = await fetch(
+        deleteAllRequestURL,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const responseData = await response.json();
+      const responseData: ClientRequestResponse | Response =
+        await response.json();
       console.log('deleted successfully', responseData);
       window.location.reload();
     } catch (error) {
@@ -69,12 +76,12 @@ export class ClientRequestsComponent implements OnInit {
     }
   }
 
-  async removeRequest(requestId: number) {
+  async removeRequest(requestId: number): Promise<void> {
     const clientId: string = sessionStorage.getItem('id')!;
-    const deleteRequestURL = `http://127.0.0.1:8000/client/${clientId}/requests/${requestId}`;
+    const deleteRequestURL: string = `http://127.0.0.1:8000/client/${clientId}/requests/${requestId}`;
 
     try {
-      const response = await fetch(deleteRequestURL, {
+      const response: any = await fetch(deleteRequestURL, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -85,7 +92,7 @@ export class ClientRequestsComponent implements OnInit {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      const responseData = await response.json();
+      const responseData: any = await response.json();
       console.log('deleted successfully', responseData);
 
       window.location.reload();

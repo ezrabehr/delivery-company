@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
-import { User } from '../interface';
+import { Requests, User } from '../interface';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
@@ -12,13 +12,13 @@ import { CommonModule } from '@angular/common';
   imports: [HeaderComponent, CommonModule],
 })
 export class DeliverListComponent implements OnInit {
-  listOfRequests = [];
+  listOfRequests: Requests[] = [];
 
   listOfCreators: User[] = [];
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     const deliverId: string = sessionStorage.getItem('id')!;
-    const getDeliverListURL = `http://127.0.0.1:8000/delivery/${deliverId}/list`;
+    const getDeliverListURL: string = `http://127.0.0.1:8000/delivery/${deliverId}/list`;
 
     fetch(getDeliverListURL)
       .then((response) => {
@@ -42,9 +42,9 @@ export class DeliverListComponent implements OnInit {
     return this.listOfCreators.find((creator) => creator.id === creatorId);
   }
 
-  removeAllRequests() {
+  async removeAllRequests(): Promise<void> {
     const deliverId: string = sessionStorage.getItem('id')!;
-    const deleteAllRequestURL = `http://127.0.0.1:8000/delivery/${deliverId}/list`;
+    const deleteAllRequestURL: string = `http://127.0.0.1:8000/delivery/${deliverId}/list`;
 
     fetch(deleteAllRequestURL, {
       method: 'DELETE',
@@ -67,10 +67,10 @@ export class DeliverListComponent implements OnInit {
       });
   }
 
-  statusUpdate(status: string, requestId: number) {
+  async statusUpdate(status: string, requestId: number): Promise<void> {
     const deliverId: string = sessionStorage.getItem('id')!;
-    const addRequestURL = `http://127.0.0.1:8000/delivery/${deliverId}/list/${requestId}`;
-    const statusDict = { status };
+    const addRequestURL: string = `http://127.0.0.1:8000/delivery/${deliverId}/list/${requestId}`;
+    const statusDict: object = { status };
 
     fetch(addRequestURL, {
       method: 'PUT',
@@ -91,13 +91,12 @@ export class DeliverListComponent implements OnInit {
       })
       .catch((error) => {
         console.error('problem', error);
-        window.location.reload();
       });
   }
 
-  removeRequest(requestId: number) {
+  async removeRequest(requestId: number): Promise<void> {
     const deliverId: string = sessionStorage.getItem('id')!;
-    const removeRequestURL = `http://127.0.0.1:8000/delivery/${deliverId}/list/${requestId}`;
+    const removeRequestURL: string = `http://127.0.0.1:8000/delivery/${deliverId}/list/${requestId}`;
 
     fetch(removeRequestURL, {
       method: 'DELETE',

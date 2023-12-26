@@ -26,7 +26,7 @@ export class AddRequestComponent {
     payment: new FormControl('', Validators.required),
   });
 
-  async submitForm() {
+  async submitForm(): Promise<void> {
     const request: FormGroup = this.addForm.value;
 
     const clientId: string = sessionStorage.getItem('id')!;
