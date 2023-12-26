@@ -37,6 +37,16 @@
                       placeholder="Username"
                       formControlName="username"
                     />
+                    <div
+                      *ngIf="
+                        profileForm.get('username')?.invalid &&
+                        (profileForm.get('username')?.dirty ||
+                          profileForm.get('username')?.touched)
+                      "
+                      class="alert"
+                    >
+                      Username is required
+                    </div>
                   </div>
                 </div>
                 <div class="mb-4">
@@ -52,6 +62,16 @@
                       placeholder="Password"
                       formControlName="password"
                     />
+                    <div
+                      *ngIf="
+                        profileForm.get('password')?.invalid &&
+                        (profileForm.get('password')?.dirty ||
+                          profileForm.get('password')?.touched)
+                      "
+                      class="alert"
+                    >
+                      Password is required
+                    </div>
                   </div>
                 </div>
                 <div class="row justify-content-center">
@@ -63,6 +83,13 @@
                     >
                       Login
                     </button>
+                  </div>
+                </div>
+                <div>
+                  <div *ngIf="errorRise" class="col-md-6">
+                    <span class="error-message"
+                      >Enter valid username & password</span
+                    >
                   </div>
                 </div>
               </form>

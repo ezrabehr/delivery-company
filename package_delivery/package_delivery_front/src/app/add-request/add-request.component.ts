@@ -7,42 +7,50 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-add-request',
   standalone: true,
   templateUrl: './add-request.component.html',
   styleUrl: './add-request.component.scss',
-  imports: [HeaderComponent, ReactiveFormsModule],
+  imports: [HeaderComponent, ReactiveFormsModule, CommonModule],
 })
 export class AddRequestComponent {
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router) {}
 
-  requestForm = new FormGroup({
+  addForm: FormGroup = new FormGroup({
     to: new FormControl('', Validators.required),
     from: new FormControl('', Validators.required),
     packageSize: new FormControl('', Validators.required),
     payment: new FormControl('', Validators.required),
   });
 
-  submitForm() {
-    const request: any = this.requestForm.value;
+  async submitForm(): Promise<void> {
+    const request: FormGroup = this.addForm.value;
 
-    console.log(request);
+    const clientId: string = sessionStorage.getItem('id')!;
+    const addRequestURL: string = `http://127.0.0.1:8000/client/${clientId}/requests`;
 
-    const id: string = sessionStorage.getItem('id')!;
-    const addRequestURL = `http://127.0.0.1:8000/client/${id}/requests/`;
+    try {
+      const response: Response = await fetch(addRequestURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(request),
+      });
 
-    this.http.post(addRequestURL, request).subscribe(
-      (response: any) => {
-        console.log('authentication succcessful', response);
-
-        this.router.navigate(['/my-requests']);
-      },
-      (error) => {
-        console.error('Authentication failed', error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    );
+
+      const responseData : object = await response.json();
+      console.log('authentication successful', responseData);
+
+      this.router.navigate(['/my-requests']);
+    } catch (error) {
+      console.error('Authentication failed', error);
+    }
   }
 }

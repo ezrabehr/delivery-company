@@ -10,6 +10,7 @@ class Request(models.Model):
         MEDIUM = "medium", _("Medium")
         LARGE = "large", _("Large")
 
+    # creating enum field for status
     class Status(models.TextChoices):
         PENDING = "pending", _("Pending")
         IN_PROGRESS = "in_progress", _("In Progress")
@@ -33,6 +34,7 @@ class Request(models.Model):
         on_delete=models.SET_NULL,
     )
 
+    # custom delete
     def delete(self, using=None, keep_parents=False, deletion_context=None):
         # if the request has a delivery person and the "deletion_context" is 'delivery'
         # remove it just from the delivery list
@@ -52,11 +54,8 @@ class Request(models.Model):
             f"Creator: {self.creator}, Delivery: {self.delivery}"
         )
 
-    # def create_request(request, current, destination, package_size, price, creator):
-
-
     def submit(self, current, destination, package_size, price, creator):
-        # Create a new Request and save it to the database
+        # create a new Request and save it to the database
         new_request = Request.objects.create(
             current=current,
             destination=destination,

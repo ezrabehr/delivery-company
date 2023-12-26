@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { User, UserMini } from '../interface';
-import { Router } from '@angular/router';
+import { ClientRequestResponse, Requests, UserMini } from '../interface';
 
 @Component({
   selector: 'app-client-requests',
@@ -13,9 +11,7 @@ import { Router } from '@angular/router';
   imports: [HeaderComponent, CommonModule],
 })
 export class ClientRequestsComponent implements OnInit {
-  constructor(private http: HttpClient) {}
-
-  listOfRequests = [];
+  listOfRequests: Requests[] = [];
   client: UserMini = {
     email: '',
     id: 0,
@@ -23,53 +19,85 @@ export class ClientRequestsComponent implements OnInit {
     username: '',
   };
 
-  ngOnInit(): void {
-    const id: string = sessionStorage.getItem('id')!;
-    const addRequestURL = `http://127.0.0.1:8000/client/${id}/requests/`;
+  async ngOnInit(): Promise<void> {
+    const clientId: string = sessionStorage.getItem('id')!;
+    const getAllRequestURL: string = `http://127.0.0.1:8000/client/${clientId}/requests`;
 
-    this.http.get(addRequestURL).subscribe(
-      (response: any) => {
-        console.log('SQL query successful', response);
+    try {
+      const response: ClientRequestResponse | Response = await fetch(
+        getAllRequestURL,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-        this.listOfRequests = response.client_requests;
-        this.client = response.client;
-
-        console.log(this.listOfRequests);
-      },
-      (error) => {
-        console.error('SQL query failed', error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    );
+
+      const responseData: any = await response.json();
+      console.log('SQL query successful', responseData);
+
+      this.listOfRequests = responseData.client_requests;
+      this.client = responseData.client;
+    } catch (error) {
+      console.error('SQL query failed', error);
+    }
   }
 
-  removeAllRequests() {
-    const id: string = sessionStorage.getItem('id')!;
-    const addRequestURL = `http://127.0.0.1:8000/client/${id}/requests/`;
-    this.http.delete(addRequestURL).subscribe(
-      (response: any) => {
-        console.log('deleted successfully', response);
+  async removeAllRequests(): Promise<void> {
+    const clientId: string = sessionStorage.getItem('id')!;
+    const deleteAllRequestURL: string = `http://127.0.0.1:8000/client/${clientId}/requests`;
 
-        window.location.reload();
-      },
-      (error) => {
-        console.error('problem', error);
+    try {
+      const response: ClientRequestResponse | Response = await fetch(
+        deleteAllRequestURL,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    );
+
+      const responseData: ClientRequestResponse | Response =
+        await response.json();
+      console.log('deleted successfully', responseData);
+      window.location.reload();
+    } catch (error) {
+      console.error('problem', error);
+    }
   }
 
-  removeRequest(request_id: number) {
-    const id: string = sessionStorage.getItem('id')!;
+  async removeRequest(requestId: number): Promise<void> {
+    const clientId: string = sessionStorage.getItem('id')!;
+    const deleteRequestURL: string = `http://127.0.0.1:8000/client/${clientId}/requests/${requestId}`;
 
-    const addRequestURL = `http://127.0.0.1:8000/client/${id}/requests/${request_id}`;
-    this.http.delete(addRequestURL).subscribe(
-      (response: any) => {
-        console.log('deleted successfully', response);
+    try {
+      const response: any = await fetch(deleteRequestURL, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-        window.location.reload();
-      },
-      (error) => {
-        console.error('problem', error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    );
+
+      const responseData: any = await response.json();
+      console.log('deleted successfully', responseData);
+
+      window.location.reload();
+    } catch (error) {
+      console.error('problem', error);
+    }
   }
 }

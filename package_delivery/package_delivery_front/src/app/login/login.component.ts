@@ -19,38 +19,49 @@ import { User } from '../interface';
   imports: [CommonModule, RouterOutlet, ReactiveFormsModule, HeaderComponent],
 })
 export class LoginComponent {
-  constructor(private router: Router, private http: HttpClient) {}
-
+  constructor(private router: Router) {}
+  errorRise: boolean = false;
   profileForm = new FormGroup({
     username: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
   });
 
-  onSubmit() {
-    const credentials = this.profileForm.value;
-    console.log(credentials);
+  async onSubmit(): Promise<void> {
+    const credentials: any = this.profileForm.value;
 
-    const loginURL = 'http://127.0.0.1:8000/login';
+    const loginURL: string = 'http://127.0.0.1:8000/login';
 
-    this.http.post(loginURL, credentials).subscribe(
-      (response: any) => {
-        console.log('authentication succcessful', response);
+    try {
+      const response: any = await fetch(loginURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
 
-        sessionStorage.setItem('username', response.user.username);
-        sessionStorage.setItem('first_name', response.user.first_name);
-        sessionStorage.setItem('last_name', response.user.last_name);
-        sessionStorage.setItem('password', response.user.password);
-        sessionStorage.setItem('phone_number', response.user.phone_number);
-        sessionStorage.setItem('email', response.user.email);
-        sessionStorage.setItem('userType', response.user.role);
-        sessionStorage.setItem('id', response.user.id);
-        sessionStorage.setItem('role', response.user.role);
-
-        this.router.navigate(['/home']);
-      },
-      (error) => {
-        console.error('Authentication failed', error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    );
+
+      const responseData: any = await response.json();
+      console.log('authentication successful', responseData);
+
+      const user: any = responseData.user;
+
+      sessionStorage.setItem('username', user.username);
+      sessionStorage.setItem('first_name', user.first_name);
+      sessionStorage.setItem('last_name', user.last_name);
+      sessionStorage.setItem('password', user.password);
+      sessionStorage.setItem('phone_number', user.phone_number);
+      sessionStorage.setItem('email', user.email);
+      sessionStorage.setItem('id', user.id);
+      sessionStorage.setItem('role', user.role);
+
+      this.router.navigate(['/home']);
+    } catch (error) {
+      this.errorRise = true;
+      console.error('Authentication failed', error);
+    }
   }
 }

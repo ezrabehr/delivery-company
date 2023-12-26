@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Client, Deliver
 
-
+# used this to show custom admin fields in the db
 class CustomAdminModel(admin.ModelAdmin):
     list_display = (
         "username",
@@ -11,7 +11,4 @@ class CustomAdminModel(admin.ModelAdmin):
         "phone_number",
     )
 
-
 admin.site.register([Client, Deliver], CustomAdminModel)
-
-# Register your models here.

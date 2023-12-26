@@ -1,3 +1,8 @@
+<link
+  rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+/>
+
 <app-header></app-header>
 
 <div class="container mt-5">
@@ -16,9 +21,20 @@
                 <div class="media-body">
                   <h5 class="mb-4">
                     Status:
-                    <span *ngIf="item['status'] === 'pending'" class="badge bg-danger mx-3">Pending</span
-                    ><span  *ngIf="item['status'] === 'in_progress'" class="badge bg-primary mx-3">In Progress</span>
-                    <span  *ngIf="item['status'] === 'complete'" class="badge bg-success mx-3">Complete</span>
+                    <span
+                      *ngIf="item['status'] === 'pending'"
+                      class="badge bg-danger mx-1"
+                      >Pending</span
+                    ><span
+                      *ngIf="item['status'] === 'in_progress'"
+                      class="badge bg-primary mx-1"
+                      >In Progress</span
+                    >
+                    <span
+                      *ngIf="item['status'] === 'complete'"
+                      class="badge bg-success mx-1"
+                      >Complete</span
+                    >
                   </h5>
 
                   <div class="mb-3">
@@ -61,15 +77,21 @@
                       }}</a></span
                     >
                     <span
-                      ><a href="tel:{{ client.phone_number }}">{{
+                      ><a href="tel:+972{{ client.phone_number }}">{{
                         client.phone_number
                       }}</a></span
                     >
                   </div>
                 </div>
               </div>
-              <div class="buttons-to-right">
-                <button class="btn btn-gray mr-2" (click)="removeRequest(item['id'])">
+              <div
+                class="buttons-to-right"
+                *ngIf="item['status'] !== 'complete'"
+              >
+                <button
+                  class="btn btn-gray mr-2"
+                  (click)="removeRequest(item['id'])"
+                >
                   <i class="far fa-times-circle"></i>Remove
                 </button>
               </div>
@@ -83,6 +105,15 @@
 
 <div class="fixed-button">
   <a href="/add-request" class="btn btn-primary btn-lg rounded-circle"> + </a>
+</div>
+
+<div class="container mt-5" *ngIf="listOfRequests.length == 0">
+  <div class="row">
+    <div class="col-md-6 offset-md-3 text-center">
+      <h3>You have no requests</h3>
+      <br>
+    </div>
+  </div>
 </div>
 
 <!-- Button to remove all requests -->

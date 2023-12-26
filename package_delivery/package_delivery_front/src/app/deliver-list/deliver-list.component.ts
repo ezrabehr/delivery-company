@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
-import { User } from '../interface';
+import { Requests, User } from '../interface';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
@@ -12,81 +12,110 @@ import { CommonModule } from '@angular/common';
   imports: [HeaderComponent, CommonModule],
 })
 export class DeliverListComponent implements OnInit {
-  constructor(private http: HttpClient) {}
-
-  listOfRequests = [];
+  listOfRequests: Requests[] = [];
 
   listOfCreators: User[] = [];
 
-  ngOnInit(): void {
-    const id: string = sessionStorage.getItem('id')!;
-    const getRequestURL = `http://127.0.0.1:8000/delivery/${id}/list`;
+  async ngOnInit(): Promise<void> {
+    const deliverId: string = sessionStorage.getItem('id')!;
+    const getDeliverListURL: string = `http://127.0.0.1:8000/delivery/${deliverId}/list`;
 
-    this.http.get(getRequestURL).subscribe(
-      (response: any) => {
-        console.log('SQL query successful', response);
+    fetch(getDeliverListURL)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('SQL query successful', data);
 
-        this.listOfRequests = response.requests;
-        this.listOfCreators = response.creators;
-
-        console.log(this.listOfRequests);
-        console.log(this.listOfCreators);
-      },
-      (error) => {
+        this.listOfRequests = data.requests;
+        this.listOfCreators = data.creators;
+      })
+      .catch((error) => {
         console.error('SQL query failed', error);
-      }
-    );
+      });
   }
 
-  getCreatorById(creator_id: number) {
-    return this.listOfCreators.find((creator) => creator.id === creator_id);
+  getCreatorById(creatorId: number) {
+    return this.listOfCreators.find((creator) => creator.id === creatorId);
   }
 
-  removeAllRequests() {
-    const id: string = sessionStorage.getItem('id')!;
-    const addRequestURL = `http://127.0.0.1:8000/delivery/${id}/list`;
-    this.http.delete(addRequestURL).subscribe(
-      (response: any) => {
-        console.log('deleted successfully', response);
+  async removeAllRequests(): Promise<void> {
+    const deliverId: string = sessionStorage.getItem('id')!;
+    const deleteAllRequestURL: string = `http://127.0.0.1:8000/delivery/${deliverId}/list`;
 
-        window.location.reload();
+    fetch(deleteAllRequestURL, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      (error) => {
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('deleted successfully', data);
+        window.location.reload();
+      })
+      .catch((error) => {
         console.error('problem', error);
-      }
-    );
+      });
   }
 
-  statusUpdate(status: string, request_id: number) {
-    const id: string = sessionStorage.getItem('id')!;
-    const addRequestURL = `http://127.0.0.1:8000/delivery/${id}/list/${request_id}`;
-    const status_dict = {
-      status: status,
-    };
-    this.http.put(addRequestURL, status_dict).subscribe(
-      (response: any) => {
-        console.log('updated successfully', response);
+  async statusUpdate(status: string, requestId: number): Promise<void> {
+    const deliverId: string = sessionStorage.getItem('id')!;
+    const addRequestURL: string = `http://127.0.0.1:8000/delivery/${deliverId}/list/${requestId}`;
+    const statusDict: object = { status };
 
-        window.location.reload();
+    fetch(addRequestURL, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      (error) => {
+      body: JSON.stringify(statusDict),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('updated successfully', data);
+        window.location.reload();
+      })
+      .catch((error) => {
         console.error('problem', error);
-      }
-    );
+      });
   }
 
-  removeRequest(request_id: number) {
-    const id: string = sessionStorage.getItem('id')!;
-    const updateRequestURL = `http://127.0.0.1:8000/delivery/${id}/list/${request_id}`;
-    const data = {};
-    this.http.delete(updateRequestURL, data).subscribe(
-      (response: any) => {
-        console.log('removed successfully', response);
-        window.location.reload();
+  async removeRequest(requestId: number): Promise<void> {
+    const deliverId: string = sessionStorage.getItem('id')!;
+    const removeRequestURL: string = `http://127.0.0.1:8000/delivery/${deliverId}/list/${requestId}`;
+
+    fetch(removeRequestURL, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      (error) => {
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('removed successfully', data);
+        window.location.reload();
+      })
+      .catch((error) => {
         console.error("didn't work", error);
-      }
-    );
+      });
   }
 }

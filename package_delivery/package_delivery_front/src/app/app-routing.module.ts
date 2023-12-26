@@ -7,7 +7,7 @@ import { AddRequestComponent } from './add-request/add-request.component';
 import { ClientRequestsComponent } from './client-requests/client-requests.component';
 import { RequestListComponent } from './request-list/request-list.component';
 import { DeliverListComponent } from './deliver-list/deliver-list.component';
-import {clientAuth, deliverAuth} from './auth-guard.guard';
+import { clientAuth, deliverAuth } from './auth-guard.guard';
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
   {

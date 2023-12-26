@@ -1,3 +1,8 @@
+<link
+  rel="stylesheet"
+  href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+/>
+
 <app-header></app-header>
 
 <div class="container mt-5">
@@ -124,6 +129,7 @@
                 </div>
                 <div class="buttons-to-right">
                   <button
+                    *ngIf="item['status'] !== 'complete'"
                     class="btn btn-gray mr-2"
                     (click)="removeRequest(item['id'])"
                   >
@@ -135,6 +141,15 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-5" *ngIf="listOfRequests.length == 0">
+  <div class="row">
+    <div class="col-md-6 offset-md-3 text-center">
+      <h3>There are no requests designated to you</h3>
+      <br />
     </div>
   </div>
 </div>

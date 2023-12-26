@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from '../header/header.component';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { User } from '../interface';
+import { Requests, User } from '../interface';
 @Component({
   selector: 'app-request-list',
   standalone: true,
@@ -11,48 +11,58 @@ import { User } from '../interface';
   imports: [HeaderComponent, CommonModule],
 })
 export class RequestListComponent implements OnInit {
-  constructor(private http: HttpClient) {}
-
-  listOfRequests = [];
+  listOfRequests: Requests[] = [];
 
   listOfCreators: User[] = [];
 
-  ngOnInit(): void {
-    const id: string = sessionStorage.getItem('id')!;
-    const getRequestURL = `http://127.0.0.1:8000/delivery/${id}/requests`;
+  async ngOnInit(): Promise<void> {
+    const deliverId: string = sessionStorage.getItem('id')!;
+    const getRequestListURL: string = `http://127.0.0.1:8000/delivery/${deliverId}/requests`;
 
-    this.http.get(getRequestURL).subscribe(
-      (response: any) => {
-        console.log('SQL query successful', response);
+    try {
+      const response = await fetch(getRequestListURL);
 
-        this.listOfRequests = response.requests;
-        this.listOfCreators = response.creators;
-
-        console.log(this.listOfRequests);
-        console.log(this.listOfCreators);
-      },
-      (error) => {
-        console.error('SQL query failed', error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    );
+
+      const responseData = await response.json();
+      console.log('SQL query successful', responseData);
+
+      this.listOfRequests = responseData.requests;
+      this.listOfCreators = responseData.creators;
+    } catch (error) {
+      console.error('SQL query failed', error);
+    }
   }
 
-  getCreatorById(creator_id: number) {
-    return this.listOfCreators.find((creator) => creator.id === creator_id);
+  getCreatorById(creatorId: number) {
+    return this.listOfCreators.find((creator) => creator.id === creatorId);
   }
 
-  addRequest(request_id: number) {
-    const id: string = sessionStorage.getItem('id')!;
-    const updateRequestURL = `http://127.0.0.1:8000/delivery/${id}/request/${request_id}`;
-    const data = {};
-    this.http.put(updateRequestURL, data).subscribe(
-      (response: any) => {
-        console.log('updated successfully', response);
-        window.location.reload()
-      },
-      (error) => {
-        console.error("didn't work", error);
+  async addRequest(requestId: number): Promise<void> {
+    const deliverId: string = sessionStorage.getItem('id')!;
+    const updateRequestURL: string = `http://127.0.0.1:8000/delivery/${deliverId}/request/${requestId}`;
+
+    try {
+      const response: any = await fetch(updateRequestURL, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    );
+
+      const responseData: any = await response.json();
+      console.log('updated successfully', responseData);
+
+      window.location.reload();
+    } catch (error) {
+      console.error("didn't work", error);
+    }
   }
 }

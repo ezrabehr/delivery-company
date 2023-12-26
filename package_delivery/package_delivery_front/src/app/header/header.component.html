@@ -1,6 +1,5 @@
 <nav class="navbar bg-body-tertiary navbar-expand-lg">
   <div class="container-fluid">
-    <!-- Left side: Home and Options -->
     <div class="d-flex align-items-center">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
@@ -19,22 +18,41 @@
           </a>
           <ul class="dropdown-menu">
             <li>
-              <a class="dropdown-item" *ngIf="userType === 'client'" href="/add-request">Add request</a>
+              <a
+                class="dropdown-item"
+                *ngIf="userType === 'client'"
+                href="/add-request"
+                >Add request</a
+              >
             </li>
             <li>
-              <a class="dropdown-item" *ngIf="userType === 'client'" href="/my-requests">My requests</a>
+              <a
+                class="dropdown-item"
+                *ngIf="userType === 'client'"
+                href="/my-requests"
+                >My requests</a
+              >
             </li>
             <li>
-              <a class="dropdown-item" *ngIf="userType === 'deliver'" href="/all-request">All requests</a>
+              <a
+                class="dropdown-item"
+                *ngIf="userType === 'deliver'"
+                href="/all-request"
+                >All requests</a
+              >
             </li>
             <li>
-              <a class="dropdown-item" *ngIf="userType === 'deliver'" href="/my-deliveries">My deliveries</a>
+              <a
+                class="dropdown-item"
+                *ngIf="userType === 'deliver'"
+                href="/my-deliveries"
+                >My deliveries</a
+              >
             </li>
           </ul>
         </li>
       </ul>
     </div>
-    <!-- Center: Logo -->
     <div class="d-flex justify-content-center">
       <a class="navbar-brand" href="#">
         <img
@@ -49,7 +67,6 @@
       <h4>Welcome, {{ username }}!</h4>
     </div>
 
-    <!-- Right side: Login/Sign up -->
     <div
       *ngIf="username === null; else login"
       class="d-flex align-items-center"
@@ -59,7 +76,7 @@
 
     <ng-template #login>
       <div class="d-flex align-items-center">
-        <a class="dropdown-item" href="/home" (click)="logout()">Logout</a>
+        <a class="dropdown-item" href="/login" (click)="logout()">Logout</a>
       </div>
     </ng-template>
   </div>

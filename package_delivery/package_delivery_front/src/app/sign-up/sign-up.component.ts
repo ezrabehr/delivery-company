@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import {
   FormControl,
@@ -18,7 +17,7 @@ import { HeaderComponent } from '../header/header.component';
   imports: [CommonModule, RouterOutlet, ReactiveFormsModule, HeaderComponent],
 })
 export class SignUpComponent {
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router) {}
 
   signUpForm = new FormGroup({
     username: new FormControl('', Validators.required),
@@ -31,30 +30,41 @@ export class SignUpComponent {
     user: new FormControl('', Validators.required),
   });
 
-  onSubmit() {
-    const credentials = this.signUpForm.value;
-    console.log(credentials);
+  async onSubmit(): Promise<void> {
+    const credentials: any = this.signUpForm.value;
 
-    const signUpURL = 'http://127.0.0.1:8000/signup';
-    this.http.post(signUpURL, credentials).subscribe(
-      (response: any) => {
-        console.log('authentication succcessful', response);
+    const signUpURL: string = 'http://127.0.0.1:8000/signup';
 
-        sessionStorage.setItem('username', response.user.username);
-        sessionStorage.setItem('first_name', response.user.first_name);
-        sessionStorage.setItem('last_name', response.user.last_name);
-        sessionStorage.setItem('password', response.user.password);
-        sessionStorage.setItem('phone_number', response.user.phone_number);
-        sessionStorage.setItem('email', response.user.email);
-        sessionStorage.setItem('userType', response.user.role);
-        sessionStorage.setItem('id', response.user.id);
-        sessionStorage.setItem('role', response.user.role);
+    try {
+      const response = await fetch(signUpURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
 
-        this.router.navigate(['/home']);
-      },
-      (error) => {
-        console.error('Authentication failed', error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    );
+
+      const responseData: any = await response.json();
+      console.log('authentication successful', responseData);
+
+      const user = responseData.user;
+
+      sessionStorage.setItem('username', user.username);
+      sessionStorage.setItem('first_name', user.first_name);
+      sessionStorage.setItem('last_name', user.last_name);
+      sessionStorage.setItem('password', user.password);
+      sessionStorage.setItem('phone_number', user.phone_number);
+      sessionStorage.setItem('email', user.email);
+      sessionStorage.setItem('id', user.id);
+      sessionStorage.setItem('role', user.role);
+
+      this.router.navigate(['/home']);
+    } catch (error) {
+      console.error('Authentication failed', error);
+    }
   }
 }

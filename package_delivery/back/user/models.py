@@ -13,7 +13,7 @@ class User(AbstractUser):
         max_length=10, choices=Role.choices, default=Role.CLIENT
     )
 
-
+# creating 2 types of user (client/deliver)
 class Client(User):
     pass
 
