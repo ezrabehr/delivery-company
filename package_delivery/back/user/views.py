@@ -21,6 +21,7 @@ def user_signup(request):
         confirmPassword = request.data.get("confirmPassword")
         phone_number = request.data.get("phoneNumber")
         user = request.data.get("user")
+        userType = request.data.get("userType")
 
         type_of_user = None
 
@@ -45,6 +46,7 @@ def user_signup(request):
                 password=password,
                 phone_number=phone_number,
                 role=user,
+                userType=userType,
             )
 
             user_info_db = User.objects.get(username=username)

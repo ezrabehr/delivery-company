@@ -57,6 +57,7 @@ export class LoginComponent {
       sessionStorage.setItem('email', user.email);
       sessionStorage.setItem('id', user.id);
       sessionStorage.setItem('role', user.role);
+      sessionStorage.setItem('userType', user.userType);
 
       this.router.navigate(['/home']);
     } catch (error) {

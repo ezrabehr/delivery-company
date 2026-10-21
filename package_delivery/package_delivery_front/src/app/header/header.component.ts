@@ -14,5 +14,5 @@ export class HeaderComponent {
     sessionStorage.clear();
   }
   username: string | null = sessionStorage.getItem('username');
-  userType: string = sessionStorage.getItem('userType')!;
+  userType: string = sessionStorage.getItem('role')!;
 }
